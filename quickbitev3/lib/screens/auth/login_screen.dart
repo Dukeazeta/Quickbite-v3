@@ -47,19 +47,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 48),
                         // Logo and App Name
                         const SizedBox(height: 60),
-                        Image.asset(
-                          'assets/images/fast_food_logo.png',
-                          height: 80,
-                        ),
-                        const SizedBox(height: 16),
                         const Text(
-                          'Fast Food',
+                          'QuickBite',
                           style: TextStyle(
                             color: Colors.red,
-                            fontSize: 24,
+                            fontSize: 48,
                             fontWeight: FontWeight.bold,
+                            fontFamily: 'Boxing_Complete',
                           ),
+                          textAlign: TextAlign.center,
                         ),
+                        const SizedBox(height: 16),
                         const Text(
                           'Deliever Favorite Food',
                           style: TextStyle(
