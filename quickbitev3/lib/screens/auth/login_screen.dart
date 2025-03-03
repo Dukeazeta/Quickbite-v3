@@ -1,11 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/auth/auth_bloc.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider(
+      create: (context) => AuthBloc(),
+      child: BlocConsumer<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          } else if (state is AuthSuccess) {
+            // TODO: Navigate to home screen
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Padding(
@@ -28,6 +59,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 48),
               // Email TextField
               TextField(
+                controller: _emailController,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Email',
@@ -41,6 +73,47 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
+              // Password TextField
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Password',
+                  hintStyle: TextStyle(color: Colors.grey[600]),
+                  filled: true,
+                  fillColor: Colors.grey[900],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Login Button
+              ElevatedButton(
+                onPressed: () {
+                  context.read<AuthBloc>().add(
+                        LoginWithEmailPassword(
+                          _emailController.text,
+                          _passwordController.text,
+                        ),
+                      );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: state is AuthLoading
+                    ? const CircularProgressIndicator(color: Colors.black)
+                    : const Text(
+                        'Login',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+              ),
               // Password TextField
               TextField(
                 obscureText: true,
@@ -120,6 +193,8 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
+        },
+      ),
     );
   }
 
@@ -144,6 +219,8 @@ class LoginScreen extends StatelessWidget {
       label: Text(
         label,
         style: const TextStyle(color: Colors.white),
+      ),
+        },
       ),
     );
   }
