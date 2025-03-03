@@ -21,3 +21,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: Boxing
+      fonts:
+        - asset: assets/Fonts/OTF/Boxing-Regular.otf
+    - family: AzeretMono
+      fonts:
+        - asset: assets/Fonts/AzeretMono/AzeretMono-Regular.ttf
