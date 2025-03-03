@@ -19,7 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     super.dispose();
   }
-  const LoginScreen({super.key});
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-      ),
+      ));
         },
       ),
     );
@@ -219,8 +220,6 @@ class _LoginScreenState extends State<LoginScreen> {
       label: Text(
         label,
         style: const TextStyle(color: Colors.white),
-      ),
-        },
       ),
     );
   }
