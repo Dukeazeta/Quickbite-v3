@@ -15,82 +15,39 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(
-          'QuickBite',
-          style: GoogleFonts.montserrat(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          // Profile menu with avatar
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: PopupMenuButton(
-              icon: CircleAvatar(
-                backgroundColor: Colors.grey[800],
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.white,
+        automaticallyImplyLeading: false,
+        titleSpacing: 0,
+        toolbarHeight: 60,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Custom menu button on the left
+              CustomMenuButton(
+                onPressed: () {
+                  // TODO: Open drawer or menu
+                },
+              ),
+
+              // QuickBite logo in the center
+              const Text(
+                'QuickBite',
+                style: TextStyle(
+                  color: Color.fromRGBO(244, 67, 54, 1),
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Boxing',
+                  letterSpacing: 1,
                 ),
               ),
-              color: Colors.grey[900],
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: ListTile(
-                    leading: const Icon(Icons.person, color: Colors.white),
-                    title: Text(
-                      'Profile',
-                      style: GoogleFonts.montserrat(color: Colors.white),
-                    ),
-                  ),
-                  onTap: () {
-                    // TODO: Navigate to profile screen
-                  },
-                ),
-                PopupMenuItem(
-                  child: ListTile(
-                    leading: const Icon(Icons.shopping_cart, color: Colors.white),
-                    title: Text(
-                      'My Orders',
-                      style: GoogleFonts.montserrat(color: Colors.white),
-                    ),
-                  ),
-                  onTap: () {
-                    // TODO: Navigate to orders screen
-                  },
-                ),
-                PopupMenuItem(
-                  child: ListTile(
-                    leading: const Icon(Icons.settings, color: Colors.white),
-                    title: Text(
-                      'Settings',
-                      style: GoogleFonts.montserrat(color: Colors.white),
-                    ),
-                  ),
-                  onTap: () {
-                    // TODO: Navigate to settings screen
-                  },
-                ),
-                PopupMenuItem(
-                  child: ListTile(
-                    leading: const Icon(Icons.logout, color: Colors.white),
-                    title: Text(
-                      'Logout',
-                      style: GoogleFonts.montserrat(color: Colors.white),
-                    ),
-                  ),
-                  onTap: () {
-                    // TODO: Implement logout functionality
-                    Navigator.of(context).pushReplacementNamed('/login');
-                  },
-                ),
-              ],
-            ),
+
+              // Profile avatar on the right
+              ProfileAvatar(),
+            ],
           ),
-        ],
+        ),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Center(
         child: Text(
@@ -101,6 +58,130 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// Custom menu button widget
+class CustomMenuButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const CustomMenuButton({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 20,
+            height: 2,
+            margin: const EdgeInsets.only(bottom: 4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(1),
+            ),
+          ),
+          Container(
+            width: 15,
+            height: 2,
+            margin: const EdgeInsets.only(bottom: 4),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(1),
+            ),
+          ),
+          Container(
+            width: 20,
+            height: 2,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(1),
+            ),
+          ),
+        ],
+      ),
+      onPressed: onPressed,
+    );
+  }
+}
+
+// Profile avatar widget
+class ProfileAvatar extends StatelessWidget {
+  const ProfileAvatar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      icon: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: Colors.grey[800],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: const Icon(
+          Icons.person,
+          color: Colors.white,
+          size: 20,
+        ),
+      ),
+      color: Colors.grey[900],
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.person, color: Colors.white),
+            title: Text(
+              'Profile',
+              style: GoogleFonts.montserrat(color: Colors.white),
+            ),
+          ),
+          onTap: () {
+            // TODO: Navigate to profile screen
+          },
+        ),
+        PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.shopping_cart, color: Colors.white),
+            title: Text(
+              'My Orders',
+              style: GoogleFonts.montserrat(color: Colors.white),
+            ),
+          ),
+          onTap: () {
+            // TODO: Navigate to orders screen
+          },
+        ),
+        PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.settings, color: Colors.white),
+            title: Text(
+              'Settings',
+              style: GoogleFonts.montserrat(color: Colors.white),
+            ),
+          ),
+          onTap: () {
+            // TODO: Navigate to settings screen
+          },
+        ),
+        PopupMenuItem(
+          child: ListTile(
+            leading: const Icon(Icons.logout, color: Colors.white),
+            title: Text(
+              'Logout',
+              style: GoogleFonts.montserrat(color: Colors.white),
+            ),
+          ),
+        ),
+      ],
+      // Fix for logout on hot reload
+      onSelected: (value) {
+        // Handle menu item selection here instead of onTap
+      },
     );
   }
 }
