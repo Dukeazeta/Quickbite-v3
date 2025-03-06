@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart'; // Add this import
 import '../../blocs/auth/auth_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -50,29 +51,32 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Text(
                           'QuickBite',
                           style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'AzeretMono',
+                            color: Color.fromRGBO(244, 67, 54, 1),
+                            fontSize: 54,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Boxing',
+                            letterSpacing: 2,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'Deliever Favorite Food',
-                          style: TextStyle(
+                        const SizedBox(height: 32),
+                        Text(
+                          'Your favourite food in one place',
+                          style: GoogleFonts.montserrat(
                             color: Colors.white,
                             fontSize: 16,
                           ),
+                          textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 48),
+                        const SizedBox(height: 64),
                         // Email TextField
                         TextField(
                           controller: _emailController,
-                          style: const TextStyle(color: Colors.white),
+                          style: GoogleFonts.montserrat(color: Colors.white),
                           decoration: InputDecoration(
                             hintText: 'Email',
-                            hintStyle: TextStyle(color: Colors.grey[600]),
+                            hintStyle:
+                                GoogleFonts.montserrat(color: Colors.grey[600]),
                             filled: true,
                             fillColor: Colors.grey[900],
                             border: OutlineInputBorder(
@@ -178,11 +182,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: 150,
                               child: ElevatedButton.icon(
                                 onPressed: () {},
-                                icon: Image.asset(
-                                    'assets/images/google_icon.png',
-                                    height: 24),
+                                icon: Icon(Icons.g_mobiledata, color: Colors.white), // Using a Google-like icon from Material Icons
                                 label: Text('Google',
-                                    style: TextStyle(color: Colors.white)),
+                                    style: GoogleFonts.montserrat(color: Colors.white)),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.grey[900],
                                   padding: EdgeInsets.symmetric(vertical: 12),

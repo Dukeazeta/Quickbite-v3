@@ -13,6 +13,7 @@ dependencies:
   flutter_bloc: ^8.1.4
   equatable: ^2.0.5
   cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0  # Add this line
 
 dev_dependencies:
   flutter_test:
@@ -21,7 +22,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-
+  assets:
+    - assets/images/
   fonts:
     - family: Boxing
       fonts:
@@ -29,3 +31,4 @@ flutter:
     - family: AzeretMono
       fonts:
         - asset: assets/AzeretMono_Complete/Fonts/TTF/AzeretMono-Variable.ttf
+          weight: 400
