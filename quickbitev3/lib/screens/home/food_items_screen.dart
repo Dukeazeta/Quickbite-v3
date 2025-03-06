@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../auth/login_screen.dart'; // Add this import
 
 class FoodItemsScreen extends StatefulWidget {
   const FoodItemsScreen({super.key});
@@ -133,6 +134,7 @@ class ProfileAvatar extends StatelessWidget {
       color: Colors.grey[900],
       itemBuilder: (context) => [
         PopupMenuItem(
+          value: 'profile',
           child: ListTile(
             leading: const Icon(Icons.person, color: Colors.white),
             title: Text(
@@ -140,11 +142,9 @@ class ProfileAvatar extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white),
             ),
           ),
-          onTap: () {
-            // TODO: Navigate to profile screen
-          },
         ),
         PopupMenuItem(
+          value: 'orders',
           child: ListTile(
             leading: const Icon(Icons.shopping_cart, color: Colors.white),
             title: Text(
@@ -152,11 +152,9 @@ class ProfileAvatar extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white),
             ),
           ),
-          onTap: () {
-            // TODO: Navigate to orders screen
-          },
         ),
         PopupMenuItem(
+          value: 'settings',
           child: ListTile(
             leading: const Icon(Icons.settings, color: Colors.white),
             title: Text(
@@ -164,11 +162,9 @@ class ProfileAvatar extends StatelessWidget {
               style: GoogleFonts.montserrat(color: Colors.white),
             ),
           ),
-          onTap: () {
-            // TODO: Navigate to settings screen
-          },
         ),
         PopupMenuItem(
+          value: 'logout',
           child: ListTile(
             leading: const Icon(Icons.logout, color: Colors.white),
             title: Text(
@@ -178,9 +174,64 @@ class ProfileAvatar extends StatelessWidget {
           ),
         ),
       ],
-      // Fix for logout on hot reload
       onSelected: (value) {
-        // Handle menu item selection here instead of onTap
+        if (value == 'logout') {
+          _showLogoutConfirmation(context);
+        }
+        // Handle other menu options here
+      },
+    );
+  }
+
+  // Show logout confirmation dialog
+  void _showLogoutConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[900],
+          title: Text(
+            'Confirm Logout',
+            style: GoogleFonts.montserrat(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: GoogleFonts.montserrat(color: Colors.white),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.montserrat(color: Colors.grey),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                // Navigate to login screen using direct navigation
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
+                  (route) => false,
+                );
+              },
+              child: Text(
+                'Logout',
+                style: GoogleFonts.montserrat(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
   }
