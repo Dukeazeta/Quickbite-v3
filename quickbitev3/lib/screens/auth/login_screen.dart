@@ -13,12 +13,20 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _isValidEmail = true; // Add this line to track email validity
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  // Add this method to validate email format
+  bool _validateEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
   }
 
   @override
@@ -73,6 +81,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextField(
                           controller: _emailController,
                           style: GoogleFonts.montserrat(color: Colors.white),
+                          onChanged: (value) {
+                            setState(() {
+                              _isValidEmail =
+                                  value.isEmpty || _validateEmail(value);
+                            });
+                          },
                           decoration: InputDecoration(
                             hintText: 'Email',
                             hintStyle:
@@ -83,22 +97,53 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
+                            errorText: _isValidEmail
+                                ? null
+                                : 'Please enter a valid email',
+                            suffixIcon: _emailController.text.isNotEmpty
+                                ? Icon(
+                                    _isValidEmail
+                                        ? Icons.check_circle
+                                        : Icons.error,
+                                    color: _isValidEmail
+                                        ? Colors.green
+                                        : Colors.red,
+                                  )
+                                : null,
                           ),
                         ),
                         const SizedBox(height: 16),
                         // Password TextField
                         TextField(
                           controller: _passwordController,
-                          obscureText: true,
-                          style: const TextStyle(color: Colors.white),
+                          obscureText:
+                              _obscurePassword, // Use the variable here
+                          style: GoogleFonts.montserrat(
+                              color: Colors.white), // Updated to use Montserrat
                           decoration: InputDecoration(
                             hintText: 'Password',
-                            hintStyle: TextStyle(color: Colors.grey[600]),
+                            hintStyle: GoogleFonts.montserrat(
+                                color: Colors
+                                    .grey[600]), // Updated to use Montserrat
                             filled: true,
                             fillColor: Colors.grey[900],
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
+                            ),
+                            // Add suffix icon for password toggle
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Colors.grey[600],
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscurePassword = !_obscurePassword;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -233,4 +278,78 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
+
+//Background gridline
+class GridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white.withOpacity(0.3) // Changed to white
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    // Create a gradient for the fade effect
+    final Rect rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final gradient = LinearGradient(
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      colors: [
+        Colors.white.withOpacity(0.3), // Changed to white
+        Colors.transparent,
+      ],
+      stops: const [0.0, 0.5],
+    );
+
+    // Number of grid lines
+    const int horizontalLines = 15;
+    const int verticalLines = 15;
+
+    // Draw curved grid lines
+    final double horizontalSpacing = size.width / horizontalLines;
+    final double verticalSpacing = size.height / verticalLines;
+
+    // Draw horizontal curved lines
+    for (int i = 0; i <= horizontalLines; i++) {
+      final path = Path();
+      final y = i * verticalSpacing;
+
+      path.moveTo(0, y);
+
+      // Create a curved line
+      path.quadraticBezierTo(
+          size.width / 2, y + (i % 2 == 0 ? 20 : -20), size.width, y);
+
+      // Apply gradient to the path
+      final linePaint = Paint()
+        ..shader = gradient.createShader(rect)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
+      canvas.drawPath(path, linePaint);
+    }
+
+    // Draw vertical curved lines
+    for (int i = 0; i <= verticalLines; i++) {
+      final path = Path();
+      final x = i * horizontalSpacing;
+
+      path.moveTo(x, 0);
+
+      // Create a curved line
+      path.quadraticBezierTo(
+          x + (i % 2 == 0 ? 20 : -20), size.height / 2, x, size.height);
+
+      // Apply gradient to the path
+      final linePaint = Paint()
+        ..shader = gradient.createShader(rect)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+
+      canvas.drawPath(path, linePaint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
