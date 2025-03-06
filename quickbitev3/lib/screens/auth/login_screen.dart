@@ -182,9 +182,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               width: 150,
                               child: ElevatedButton.icon(
                                 onPressed: () {},
-                                icon: Icon(Icons.g_mobiledata, color: Colors.white), // Using a Google-like icon from Material Icons
+                                icon: Icon(Icons.g_mobiledata,
+                                    color: Colors
+                                        .white), // Using a Google-like icon from Material Icons
                                 label: Text('Google',
-                                    style: GoogleFonts.montserrat(color: Colors.white)),
+                                    style: GoogleFonts.montserrat(
+                                        color: Colors.white)),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.grey[900],
                                   padding: EdgeInsets.symmetric(vertical: 12),
