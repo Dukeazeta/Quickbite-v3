@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart'; // Add this import
 import '../../blocs/auth/auth_bloc.dart';
+import '../home/food_items_screen.dart'; // Add this import
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,7 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
               SnackBar(content: Text(state.message)),
             );
           } else if (state is AuthSuccess) {
-            // TODO: Navigate to home screen
+            // Navigate to food items screen
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const FoodItemsScreen(),
+              ),
+            );
           }
         },
         builder: (context, state) {
@@ -151,12 +157,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Login Button
                         ElevatedButton(
                           onPressed: () {
-                            context.read<AuthBloc>().add(
-                                  LoginWithEmailPassword(
-                                    _emailController.text,
-                                    _passwordController.text,
-                                  ),
-                                );
+                            // Mock login check
+                            if (_emailController.text == 'admin@admin.com' &&
+                                _passwordController.text == 'superadmin') {
+                              // Navigate directly to food items screen for mock login
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => const FoodItemsScreen(),
+                                ),
+                              );
+                            } else {
+                              // Use the AuthBloc for real authentication
+                              context.read<AuthBloc>().add(
+                                    LoginWithEmailPassword(
+                                      _emailController.text,
+                                      _passwordController.text,
+                                    ),
+                                  );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
