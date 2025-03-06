@@ -13,7 +13,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Boxing',
+        fontFamily: 'AzeretMono',
+        textTheme: Theme.of(context).textTheme.apply(
+              fontFamily: 'AzeretMono',
+            ),
       ),
       home: LoginScreen(),
     );

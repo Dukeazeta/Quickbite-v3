@@ -28,4 +28,4 @@ flutter:
         - asset: assets/Fonts/OTF/Boxing-Regular.otf
     - family: AzeretMono
       fonts:
-        - asset: assets/Fonts/AzeretMono/AzeretMono-Regular.ttf
+        - asset: assets/AzeretMono_Complete/Fonts/TTF/AzeretMono-Variable.ttf
