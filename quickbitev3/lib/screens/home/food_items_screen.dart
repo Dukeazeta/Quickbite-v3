@@ -13,38 +13,77 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         titleSpacing: 0,
-        toolbarHeight: 60,
+        toolbarHeight: 70,
         title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Custom menu button on the left
-              CustomMenuButton(
-                onPressed: () {
-                  // TODO: Open drawer or menu
-                },
-              ),
-
-              // QuickBite logo in the center
-              const Text(
-                'QuickBite',
-                style: TextStyle(
-                  color: Color.fromRGBO(244, 67, 54, 1),
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Boxing',
-                  letterSpacing: 1,
+              // User profile image
+              Container(
+                width: 55,
+                height: 55,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.grey[200],
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    'https://randomuser.me/api/portraits/women/44.jpg',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Icon(
+                      Icons.person,
+                      color: Colors.grey[400],
+                      size: 30,
+                    ),
+                  ),
                 ),
               ),
-
-              // Profile avatar on the right
-              ProfileAvatar(),
+              const SizedBox(width: 12),
+              // User greeting
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hey Bello',
+                    style: GoogleFonts.montserrat(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    'What would you like to eat?',
+                    style: GoogleFonts.montserrat(
+                      color: Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+              const Spacer(),
+              // Notification icon - updated to square with rounded corners
+              Container(
+                width: 55,
+                height: 55,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
+                child: Icon(
+                  Icons.notifications_outlined,
+                  color: Colors.black,
+                  size: 26,
+                ),
+              ),
             ],
           ),
         ),
@@ -55,32 +94,45 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Search bar with rounded edges
+            // Rounded search bar
             Container(
+              height: 50,
               decoration: BoxDecoration(
-                color: Colors.grey[900],
-                borderRadius: BorderRadius.circular(12),
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(25),
               ),
               child: TextField(
-                style: GoogleFonts.montserrat(color: Colors.white),
+                style: GoogleFonts.poppins(color: Colors.black87),
                 decoration: InputDecoration(
-                  hintText: 'Search for food...',
-                  hintStyle: GoogleFonts.montserrat(color: Colors.grey[600]),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                  hintText: 'Search',
+                  hintStyle: GoogleFonts.poppins(
+                    color: Colors.grey[500],
+                    fontSize: 16,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.grey[500],
+                    size: 22,
+                  ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 5,
+                  ),
                 ),
                 onChanged: (value) {
                   // TODO: Implement search functionality
                 },
               ),
             ),
+            const SizedBox(height: 24),
             const SizedBox(height: 20),
             // Categories section
+            // Update category section title
             Text(
               'Categories',
               style: GoogleFonts.montserrat(
-                color: Colors.white,
+                color: Colors.black87,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -102,10 +154,11 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
             ),
             const SizedBox(height: 24),
             // Featured restaurants section
+            // Update restaurant section title
             Text(
               'Featured Restaurants',
               style: GoogleFonts.montserrat(
-                color: Colors.white,
+                color: Colors.black87,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -266,18 +319,19 @@ class ProfileAvatar extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.grey[900],
+          backgroundColor: Colors.white,
           title: Text(
             'Confirm Logout',
             style: GoogleFonts.montserrat(
-              color: Colors.white,
+              color: Colors.grey[900],
               fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
             'Are you sure you want to logout?',
-            style: GoogleFonts.montserrat(color: Colors.white),
+            style: GoogleFonts.montserrat(color: Colors.grey[700]),
           ),
+          // Update dialog buttons text colors to Colors.grey[800]
           actions: [
             TextButton(
               onPressed: () {
@@ -318,7 +372,7 @@ Widget _buildCategoryItem(String title, IconData icon) {
     width: 80,
     margin: const EdgeInsets.only(right: 12),
     decoration: BoxDecoration(
-      color: Colors.grey[900],
+      color: Colors.white,
       borderRadius: BorderRadius.circular(12),
     ),
     child: Column(
@@ -330,13 +384,13 @@ Widget _buildCategoryItem(String title, IconData icon) {
           size: 32,
         ),
         const SizedBox(height: 8),
+        // In _buildCategoryItem
         Text(
           title,
           style: GoogleFonts.montserrat(
-            color: Colors.white,
+            color: Colors.grey[800],
             fontSize: 12,
           ),
-          textAlign: TextAlign.center,
         ),
       ],
     ),
@@ -353,8 +407,14 @@ Widget _buildRestaurantCard({
 }) {
   return Container(
     decoration: BoxDecoration(
-      color: Colors.grey[900],
-      borderRadius: BorderRadius.circular(12),
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.2),
+          spreadRadius: 1,
+          blurRadius: 5,
+        )
+      ],
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -404,7 +464,7 @@ Widget _buildRestaurantCard({
               Text(
                 name,
                 style: GoogleFonts.montserrat(
-                  color: Colors.white,
+                  color: Colors.grey[900],
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                 ),
@@ -415,7 +475,7 @@ Widget _buildRestaurantCard({
               Text(
                 cuisine,
                 style: GoogleFonts.montserrat(
-                  color: Colors.grey[400],
+                  color: Colors.grey[600],
                   fontSize: 12,
                 ),
               ),
@@ -431,10 +491,11 @@ Widget _buildRestaurantCard({
                         size: 16,
                       ),
                       const SizedBox(width: 4),
+                      // Update rating and delivery time text
                       Text(
                         rating.toString(),
                         style: GoogleFonts.montserrat(
-                          color: Colors.white,
+                          color: Colors.grey[800],
                           fontSize: 12,
                         ),
                       ),
@@ -451,7 +512,7 @@ Widget _buildRestaurantCard({
                       Text(
                         deliveryTime,
                         style: GoogleFonts.montserrat(
-                          color: Colors.white,
+                          color: Colors.grey[800],
                           fontSize: 12,
                         ),
                       ),

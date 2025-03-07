@@ -14,9 +14,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
         fontFamily: 'AzeretMono',
         textTheme: Theme.of(context).textTheme.apply(
               fontFamily: 'AzeretMono',
+              bodyColor: Colors.grey[800],
             ),
       ),
       initialRoute: '/',
