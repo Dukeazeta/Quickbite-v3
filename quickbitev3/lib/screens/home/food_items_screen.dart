@@ -50,13 +50,44 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
         ),
         elevation: 0,
       ),
-      body: Center(
-        child: Text(
-          'Food items will be displayed here',
-          style: GoogleFonts.montserrat(
-            color: Colors.white,
-            fontSize: 16,
-          ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            // Search bar with rounded edges
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextField(
+                style: GoogleFonts.montserrat(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Search for food...',
+                  hintStyle: GoogleFonts.montserrat(color: Colors.grey[600]),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                onChanged: (value) {
+                  // TODO: Implement search functionality
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Existing content
+            Expanded(
+              child: Center(
+                child: Text(
+                  'Food items will be displayed here',
+                  style: GoogleFonts.montserrat(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
