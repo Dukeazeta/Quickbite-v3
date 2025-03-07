@@ -53,6 +53,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search bar with rounded edges
             Container(
@@ -75,11 +76,62 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            // Content area
+            // Categories section
+            Text(
+              'Categories',
+              style: GoogleFonts.montserrat(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 100,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  _buildCategoryItem('Fast Food', Icons.fastfood),
+                  _buildCategoryItem('Pizza', Icons.local_pizza),
+                  _buildCategoryItem('Desserts', Icons.icecream),
+                  _buildCategoryItem('Healthy', Icons.spa),
+                  _buildCategoryItem('African', Icons.restaurant),
+                  _buildCategoryItem('Asian', Icons.ramen_dining),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Featured restaurants section
+            Text(
+              'Featured Restaurants',
+              style: GoogleFonts.montserrat(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Restaurant grid - takes remaining space
             Expanded(
-              child: Center(
-                  // Text removed from here
-                  ),
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: 6, // Mock data count
+                itemBuilder: (context, index) {
+                  return _buildRestaurantCard(
+                    name: 'Restaurant ${index + 1}',
+                    cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
+                    rating: 4.5 + (index * 0.1),
+                    deliveryTime: '${20 + (index * 5)} mins',
+                    imageUrl:
+                        'https://source.unsplash.com/random/300x200?restaurant,food,$index',
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -258,4 +310,159 @@ class ProfileAvatar extends StatelessWidget {
       },
     );
   }
+}
+
+// Helper method to build category items
+Widget _buildCategoryItem(String title, IconData icon) {
+  return Container(
+    width: 80,
+    margin: const EdgeInsets.only(right: 12),
+    decoration: BoxDecoration(
+      color: Colors.grey[900],
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          color: const Color.fromRGBO(244, 67, 54, 1),
+          size: 32,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: GoogleFonts.montserrat(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  );
+}
+
+// Helper method to build restaurant cards
+Widget _buildRestaurantCard({
+  required String name,
+  required String cuisine,
+  required double rating,
+  required String deliveryTime,
+  required String imageUrl,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.grey[900],
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Restaurant image
+        ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+          child: Image.network(
+            imageUrl,
+            height: 120,
+            width: double.infinity,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Container(
+                height: 120,
+                color: Colors.grey[800],
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Color.fromRGBO(244, 67, 54, 1),
+                  ),
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                height: 120,
+                color: Colors.grey[800],
+                child: const Icon(
+                  Icons.restaurant,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              );
+            },
+          ),
+        ),
+        // Restaurant details
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: GoogleFonts.montserrat(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                cuisine,
+                style: GoogleFonts.montserrat(
+                  color: Colors.grey[400],
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        rating.toString(),
+                        style: GoogleFonts.montserrat(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.access_time,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        deliveryTime,
+                        style: GoogleFonts.montserrat(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
