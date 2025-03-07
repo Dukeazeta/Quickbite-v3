@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/auth/login_screen.dart';
+import 'screens/home/food_items_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,12 @@ class MyApp extends StatelessWidget {
               fontFamily: 'AzeretMono',
             ),
       ),
-      home: LoginScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LoginScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/home': (context) => const FoodItemsScreen(),
+      },
     );
   }
 }

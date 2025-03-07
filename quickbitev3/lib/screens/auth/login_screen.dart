@@ -157,23 +157,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Login Button
                         ElevatedButton(
                           onPressed: () {
-                            // Mock login check
-                            if (_emailController.text == 'admin@admin.com' &&
+                            // Only allow specific mock credentials
+                            if (_emailController.text == 'admin@admin.com' && 
                                 _passwordController.text == 'superadmin') {
-                              // Navigate directly to food items screen for mock login
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => const FoodItemsScreen(),
+                              // Navigate to food items screen
+                              Navigator.of(context).pushReplacementNamed('/home');
+                            } else {
+                              // Show error for invalid credentials
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid credentials. Please try again.'),
+                                  backgroundColor: Colors.red,
                                 ),
                               );
-                            } else {
-                              // Use the AuthBloc for real authentication
-                              context.read<AuthBloc>().add(
-                                    LoginWithEmailPassword(
-                                      _emailController.text,
-                                      _passwordController.text,
-                                    ),
-                                  );
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -183,14 +179,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: state is AuthLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.black)
-                              : const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                ),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
                         ),
                         const SizedBox(height: 8),
                         // Forgot Password

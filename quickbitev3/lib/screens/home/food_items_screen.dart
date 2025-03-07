@@ -214,11 +214,9 @@ class ProfileAvatar extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
-                // Navigate to login screen using direct navigation
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
+                // Use named route navigation to go back to login screen
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/login',
                   (route) => false,
                 );
               },
