@@ -75,17 +75,11 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            // Existing content
+            // Content area
             Expanded(
               child: Center(
-                child: Text(
-                  'Food items will be displayed here',
-                  style: GoogleFonts.montserrat(
-                    color: Colors.white,
-                    fontSize: 16,
+                  // Text removed from here
                   ),
-                ),
-              ),
             ),
           ],
         ),
