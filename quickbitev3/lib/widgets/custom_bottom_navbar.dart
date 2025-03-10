@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const CustomBottomNavBar({
+  const CustomBottomNavigationBar({
     Key? key,
     required this.currentIndex,
     required this.onTap,
@@ -14,29 +14,26 @@ class CustomBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16),
+      height: 70,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
             blurRadius: 10,
-            offset: const Offset(0, 5),
+            offset: const Offset(0, -2),
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildNavItem(0, Icons.home_outlined, 'Home'),
-            _buildNavItem(1, Icons.shopping_bag_outlined, 'Cart'),
-            _buildNavItem(2, Icons.search_outlined, 'Search'),
-            _buildNavItem(3, Icons.person_outline, 'Profile'),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem(0, Icons.home, 'Home'),
+          _buildNavItem(1, Icons.search, 'Search'),
+          _buildCartButton(),
+          _buildNavItem(3, Icons.favorite_border, 'Favorites'),
+          _buildNavItem(4, Icons.person_outline, 'Profile'),
+        ],
       ),
     );
   }
@@ -46,23 +43,49 @@ class CustomBottomNavBar extends StatelessWidget {
     return InkWell(
       onTap: () => onTap(index),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             icon,
-            color: isSelected ? Colors.black : Colors.grey,
+            color: isSelected ? Colors.red[700] : Colors.grey[600],
             size: 24,
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: GoogleFonts.poppins(
-              color: isSelected ? Colors.black : Colors.grey,
-              fontSize: 12,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              color: isSelected ? Colors.red[700] : Colors.grey[600],
+              fontSize: 10,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildCartButton() {
+    return Container(
+      height: 44,
+      width: 44,
+      decoration: BoxDecoration(
+        color: Colors.red[700],
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: const Icon(
+          Icons.shopping_cart_outlined,
+          color: Colors.white,
+          size: 20,
+        ),
+        onPressed: () => onTap(2),
       ),
     );
   }
