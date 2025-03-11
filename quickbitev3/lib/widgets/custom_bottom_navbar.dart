@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -17,6 +18,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
       height: 70,
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.2),
@@ -26,66 +31,40 @@ class CustomBottomNavigationBar extends StatelessWidget {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem(0, Icons.home, 'Home'),
-          _buildNavItem(1, Icons.search, 'Search'),
-          _buildCartButton(),
-          _buildNavItem(3, Icons.favorite_border, 'Favorites'),
-          _buildNavItem(4, Icons.person_outline, 'Profile'),
+          _buildNavItem(0, 'assets/icons/home.svg', 'Home'),
+          _buildNavItem(1, 'assets/icons/cart.svg', 'Cart'),
+          _buildNavItem(2, 'assets/icons/search.svg', 'Search'),
+          _buildNavItem(3, 'assets/icons/profile.svg', 'Profile'),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(int index, String iconPath, String label) {
     final bool isSelected = currentIndex == index;
     return InkWell(
       onTap: () => onTap(index),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            color: isSelected ? Colors.red[700] : Colors.grey[600],
-            size: 24,
+          SvgPicture.asset(
+            iconPath,
+            height: 24,
+            width: 24,
+            color: isSelected ? Colors.red[700] : Colors.grey[500],
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: GoogleFonts.poppins(
-              color: isSelected ? Colors.red[700] : Colors.grey[600],
-              fontSize: 10,
+              color: isSelected ? Colors.red[700] : Colors.grey[500],
+              fontSize: 12,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCartButton() {
-    return Container(
-      height: 44,
-      width: 44,
-      decoration: BoxDecoration(
-        color: Colors.red[700],
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.red.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: const Icon(
-          Icons.shopping_cart_outlined,
-          color: Colors.white,
-          size: 20,
-        ),
-        onPressed: () => onTap(2),
       ),
     );
   }
