@@ -182,7 +182,58 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
               ],
             ),
             const SizedBox(height: 12),
-            // Restaurant list - vertical scrolling with limited items
+            // Restaurant list - horizontal scrolling with limited items
+            SizedBox(
+              height: 220, // Set appropriate height for the horizontal list
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5, // Show 5 restaurants horizontally
+                itemBuilder: (context, index) {
+                  return Container(
+                    width: 200, // Fixed width for each restaurant card
+                    margin: const EdgeInsets.only(right: 16.0),
+                    child: RestaurantCard(
+                      name: 'Restaurant ${index + 1}',
+                      cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
+                      rating: 4.5 + (index * 0.1),
+                      deliveryTime: '${20 + (index * 5)} mins',
+                      imageUrl: 'https://source.unsplash.com/random/300x200/?restaurant&sig=${index}',
+                    ),
+                  );
+                },
+              ),
+            ),
+            
+            const SizedBox(height: 24),
+            // Popular restaurants section
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Popular Restaurants',
+                  style: GoogleFonts.montserrat(
+                    color: Colors.black87,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // TODO: Navigate to all popular restaurants page
+                  },
+                  child: Text(
+                    'See More',
+                    style: GoogleFonts.montserrat(
+                      color: const Color.fromRGBO(244, 67, 54, 1),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Remaining vertical list
             Expanded(
               child: ListView.builder(
                 itemCount: 3, // Show only first 3 restaurants
@@ -190,13 +241,11 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: RestaurantCard(
-                      // Remove the context parameter since it's not defined in RestaurantCard
-                      name: 'Restaurant ${index + 1}',
-                      cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
-                      rating: 4.5 + (index * 0.1),
-                      deliveryTime: '${20 + (index * 5)} mins',
-                      // Fix the image URL format
-                      imageUrl: 'https://source.unsplash.com/random/300x200/?restaurant&sig=${index}',
+                      name: 'Popular Place ${index + 1}',
+                      cuisine: index % 2 == 0 ? 'Italian' : 'Chinese',
+                      rating: 4.7 + (index * 0.1),
+                      deliveryTime: '${15 + (index * 5)} mins',
+                      imageUrl: 'https://source.unsplash.com/random/300x200/?food&sig=${index + 10}',
                     ),
                   );
                 },
