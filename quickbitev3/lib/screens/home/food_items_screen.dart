@@ -190,12 +190,13 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
                     child: RestaurantCard(
+                      // Remove the context parameter since it's not defined in RestaurantCard
                       name: 'Restaurant ${index + 1}',
                       cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
                       rating: 4.5 + (index * 0.1),
                       deliveryTime: '${20 + (index * 5)} mins',
-                      imageUrl:
-                          'https://source.unsplash.com/random/300x200?restaurant,food,$index',
+                      // Fix the image URL format
+                      imageUrl: 'https://source.unsplash.com/random/300x200/?restaurant&sig=${index}',
                     ),
                   );
                 },
