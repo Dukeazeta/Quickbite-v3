@@ -189,7 +189,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
-                    child: _buildRestaurantCard(
+                    child: RestaurantCard(
                       name: 'Restaurant ${index + 1}',
                       cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
                       rating: 4.5 + (index * 0.1),
@@ -413,149 +413,160 @@ Widget _buildCategoryItem(String title, IconData icon) {
 }
 
 // Helper method to build restaurant cards
-Widget _buildRestaurantCard({
-  required String name,
-  required String cuisine,
-  required double rating,
-  required String deliveryTime,
-  required String imageUrl,
-}) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
+// Replace the _buildRestaurantCard function with a StatelessWidget class
+class RestaurantCard extends StatelessWidget {
+  final String name;
+  final String cuisine;
+  final double rating;
+  final String deliveryTime;
+  final String imageUrl;
 
-        MaterialPageRoute(
-          builder: (context) => RestaurantDetailsScreen(
-            restaurantId: name.toLowerCase().replaceAll(' ', '_'),
-            name: name,
-            imageUrl: imageUrl,
+  const RestaurantCard({
+    Key? key,
+    required this.name,
+    required this.cuisine,
+    required this.rating,
+    required this.deliveryTime,
+    required this.imageUrl,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RestaurantDetailsScreen(
+              restaurantId: name.toLowerCase().replaceAll(' ', '_'),
+              name: name,
+              imageUrl: imageUrl,
+            ),
           ),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.black, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 5,
+            )
+          ],
         ),
-      );
-    },
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Restaurant image
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(11),
-              topRight: Radius.circular(11),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Restaurant image
+            ClipRRect(
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(11),
+                topRight: Radius.circular(11),
+              ),
+              child: Image.network(
+                imageUrl,
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 120,
+                    color: Colors.grey[200],
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: Color.fromRGBO(244, 67, 54, 1),
+                      ),
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    height: 120,
+                    color: Colors.grey[200],
+                    child: const Icon(
+                      Icons.restaurant,
+                      color: Colors.black54,
+                      size: 40,
+                    ),
+                  );
+                },
+              ),
             ),
-            child: Image.network(
-              imageUrl,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  height: 120,
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Color.fromRGBO(244, 67, 54, 1),
+            // Restaurant details
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: GoogleFonts.montserrat(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    cuisine,
+                    style: GoogleFonts.montserrat(
+                      color: Colors.grey[600],
+                      fontSize: 12,
                     ),
                   ),
-                );
-              },
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 120,
-                  color: Colors.grey[200],
-                  child: const Icon(
-                    Icons.restaurant,
-                    color: Colors.black54,
-                    size: 40,
-                  ),
-                );
-              },
-            ),
-          ),
-          // Restaurant details
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  cuisine,
-                  style: GoogleFonts.montserrat(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          rating.toString(),
-                          style: GoogleFonts.montserrat(
-                            color: Colors.black,
-                            fontSize: 12,
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 16,
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          color: Colors.black87,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          deliveryTime,
-                          style: GoogleFonts.montserrat(
-                            color: Colors.black,
-                            fontSize: 12,
+                          const SizedBox(width: 4),
+                          Text(
+                            rating.toString(),
+                            style: GoogleFonts.montserrat(
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.access_time,
+                            color: Colors.black87,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            deliveryTime,
+                            style: GoogleFonts.montserrat(
+                              color: Colors.black,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
-                      
