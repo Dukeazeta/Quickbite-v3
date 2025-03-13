@@ -2,7 +2,7 @@
 
 ## **1. Overview**
 ### **Product Name:** QuickBite (Customer App)
-### **Author:** Duke Azeta  
+### **Author:** Abdulmalik Bello  
 ### **Date:** [Insert Date]  
 ### **Version:** 1.0  
 

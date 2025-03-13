@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../auth/login_screen.dart'; // Add this import
+import '../auth/login_screen.dart';
+import '../restaurant/restaurant_details_screen.dart'; // Add this import
 
 class FoodItemsScreen extends StatefulWidget {
   const FoodItemsScreen({super.key});
@@ -154,34 +155,48 @@ class _FoodItemsScreenState extends State<FoodItemsScreen> {
             ),
             const SizedBox(height: 24),
             // Featured restaurants section
-            // Update restaurant section title
-            Text(
-              'Featured Restaurants',
-              style: GoogleFonts.montserrat(
-                color: Colors.black87,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Featured Restaurants',
+                  style: GoogleFonts.montserrat(
+                    color: Colors.black87,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    // TODO: Navigate to all restaurants page
+                  },
+                  child: Text(
+                    'See More',
+                    style: GoogleFonts.montserrat(
+                      color: const Color.fromRGBO(244, 67, 54, 1),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
-            // Restaurant grid - takes remaining space
+            // Restaurant list - vertical scrolling with limited items
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.75,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                ),
-                itemCount: 6, // Mock data count
+              child: ListView.builder(
+                itemCount: 3, // Show only first 3 restaurants
                 itemBuilder: (context, index) {
-                  return _buildRestaurantCard(
-                    name: 'Restaurant ${index + 1}',
-                    cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
-                    rating: 4.5 + (index * 0.1),
-                    deliveryTime: '${20 + (index * 5)} mins',
-                    imageUrl:
-                        'https://source.unsplash.com/random/300x200?restaurant,food,$index',
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: _buildRestaurantCard(
+                      name: 'Restaurant ${index + 1}',
+                      cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
+                      rating: 4.5 + (index * 0.1),
+                      deliveryTime: '${20 + (index * 5)} mins',
+                      imageUrl:
+                          'https://source.unsplash.com/random/300x200?restaurant,food,$index',
+                    ),
                   );
                 },
               ),
@@ -405,125 +420,142 @@ Widget _buildRestaurantCard({
   required String deliveryTime,
   required String imageUrl,
 }) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.2),
-          spreadRadius: 1,
-          blurRadius: 5,
-        )
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Restaurant image
-        ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-          child: Image.network(
-            imageUrl,
-            height: 120,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                height: 120,
-                color: Colors.grey[800],
-                child: const Center(
-                  child: CircularProgressIndicator(
-                    color: Color.fromRGBO(244, 67, 54, 1),
-                  ),
-                ),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                height: 120,
-                color: Colors.grey[800],
-                child: const Icon(
-                  Icons.restaurant,
-                  color: Colors.white,
-                  size: 40,
-                ),
-              );
-            },
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+
+        MaterialPageRoute(
+          builder: (context) => RestaurantDetailsScreen(
+            restaurantId: name.toLowerCase().replaceAll(' ', '_'),
+            name: name,
+            imageUrl: imageUrl,
           ),
         ),
-        // Restaurant details
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: GoogleFonts.montserrat(
-                  color: Colors.grey[900],
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                cuisine,
-                style: GoogleFonts.montserrat(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      // Update rating and delivery time text
-                      Text(
-                        rating.toString(),
-                        style: GoogleFonts.montserrat(
-                          color: Colors.grey[800],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+      );
+    },
+    child: Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Restaurant image
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(11),
+              topRight: Radius.circular(11),
+            ),
+            child: Image.network(
+              imageUrl,
+              height: 120,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Container(
+                  height: 120,
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Color.fromRGBO(244, 67, 54, 1),
+                    ),
                   ),
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.access_time,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        deliveryTime,
-                        style: GoogleFonts.montserrat(
-                          color: Colors.grey[800],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+                );
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 120,
+                  color: Colors.grey[200],
+                  child: const Icon(
+                    Icons.restaurant,
+                    color: Colors.black54,
+                    size: 40,
                   ),
-                ],
-              ),
-            ],
+                );
+              },
+            ),
           ),
-        ),
-      ],
+          // Restaurant details
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  cuisine,
+                  style: GoogleFonts.montserrat(
+                    color: Colors.grey[600],
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          rating.toString(),
+                          style: GoogleFonts.montserrat(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.access_time,
+                          color: Colors.black87,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          deliveryTime,
+                          style: GoogleFonts.montserrat(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
+                      
