@@ -1,475 +1,526 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../auth/login_screen.dart';
-import '../restaurant/restaurant_details_screen.dart'; // Add this import
+import '../restaurant/restaurant_details_screen.dart';
 
 class FoodItemsScreen extends StatefulWidget {
-  const FoodItemsScreen({super.key});
+  const FoodItemsScreen({Key? key}) : super(key: key);
 
   @override
   State<FoodItemsScreen> createState() => _FoodItemsScreenState();
 }
 
-class _FoodItemsScreenState extends State<FoodItemsScreen> {
+class _FoodItemsScreenState extends State<FoodItemsScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 5, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        toolbarHeight: 70,
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            children: [
-              // User profile image
-              Container(
-                width: 55,
-                height: 55,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey[200],
-                  border: Border.all(color: Colors.black, width: 1),
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            // App Bar with Profile and Notification
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Deliver to',
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey[600],
+                            fontSize: 14,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'Current Location',
+                              style: GoogleFonts.poppins(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(Icons.keyboard_arrow_down,
+                                color: Colors.red[700], size: 20),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        // Notification Button
+                        Container(
+                          height: 46,
+                          width: 46,
+                          margin: const EdgeInsets.only(right: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.15),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Icon(Icons.notifications_outlined,
+                                  color: Colors.grey[800], size: 24),
+                              Positioned(
+                                top: 10,
+                                right: 12,
+                                child: Container(
+                                  height: 8,
+                                  width: 8,
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[700],
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Profile Button
+                        GestureDetector(
+                          onTap: () {
+                            // Show profile menu
+                          },
+                          child: Container(
+                            height: 46,
+                            width: 46,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.15),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: Image.network(
+                                'https://randomuser.me/api/portraits/women/44.jpg',
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                  color: Colors.grey[300],
+                                  child: Icon(Icons.person,
+                                      color: Colors.grey[600]),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    'https://randomuser.me/api/portraits/women/44.jpg',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.person,
-                      color: Colors.grey[400],
-                      size: 30,
+              ),
+            ),
+
+            // Search Bar
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: Container(
+                  height: 55,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    style: GoogleFonts.poppins(color: Colors.black87),
+                    decoration: InputDecoration(
+                      hintText: 'Search for food, restaurants...',
+                      hintStyle: GoogleFonts.poppins(
+                        color: Colors.grey[500],
+                        fontSize: 14,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.grey[500],
+                        size: 22,
+                      ),
+                      suffixIcon: Container(
+                        margin: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.red[700],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.tune,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 5,
+                      ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              // User greeting
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Hey Bello',
-                    style: GoogleFonts.montserrat(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+            ),
+
+            // Promotional Banner
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: Container(
+                  height: 160,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.red[700]!, Colors.red[900]!],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  Text(
-                    'What would you like to eat?',
-                    style: GoogleFonts.montserrat(
-                      color: Colors.black87,
-                      fontSize: 14,
-                      fontWeight: FontWeight.normal,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        right: -20,
+                        bottom: -20,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.network(
+                            'https://source.unsplash.com/random/300x300/?burger',
+                            width: 180,
+                            height: 180,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Container(
+                              width: 180,
+                              height: 180,
+                              color: Colors.red[800],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '50% OFF',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: 180,
+                              child: Text(
+                                'Super Delicious Burger',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.red[700],
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                              ),
+                              child: Text(
+                                'Order Now',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Category Tabs
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Categories',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              // Notification icon - updated to square with rounded corners
-              Container(
-                width: 55,
-                height: 55,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black, width: 1),
-                ),
-                child: Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.black,
-                  size: 26,
-                ),
-              ),
-            ],
-          ),
-        ),
-        elevation: 0,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Rounded search bar
-            Container(
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: TextField(
-                style: GoogleFonts.poppins(color: Colors.black87),
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: GoogleFonts.poppins(
-                    color: Colors.grey[500],
-                    fontSize: 16,
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey[500],
-                    size: 22,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 5,
-                  ),
-                ),
-                onChanged: (value) {
-                  // TODO: Implement search functionality
-                },
-              ),
-            ),
-            const SizedBox(height: 24),
-            const SizedBox(height: 20),
-            // Categories section
-            // Update category section title
-            Text(
-              'Categories',
-              style: GoogleFonts.montserrat(
-                color: Colors.black87,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 100,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _buildCategoryItem('Fast Food', Icons.fastfood),
-                  _buildCategoryItem('Pizza', Icons.local_pizza),
-                  _buildCategoryItem('Desserts', Icons.icecream),
-                  _buildCategoryItem('Healthy', Icons.spa),
-                  _buildCategoryItem('African', Icons.restaurant),
-                  _buildCategoryItem('Asian', Icons.ramen_dining),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Featured restaurants section
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Featured Restaurants',
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black87,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // TODO: Navigate to all restaurants page
-                  },
-                  child: Text(
-                    'See More',
-                    style: GoogleFonts.montserrat(
-                      color: const Color.fromRGBO(244, 67, 54, 1),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
+                    const SizedBox(height: 16),
+                    TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.grey[600],
+                      labelStyle: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                      unselectedLabelStyle: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                      indicator: BoxDecoration(
+                        color: Colors.red[700],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      tabs: [
+                        Tab(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: const Text('All'),
+                          ),
+                        ),
+                        Tab(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: const Text('Fast Food'),
+                          ),
+                        ),
+                        Tab(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: const Text('Pizza'),
+                          ),
+                        ),
+                        Tab(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: const Text('Asian'),
+                          ),
+                        ),
+                        Tab(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: const Text('Desserts'),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            const SizedBox(height: 12),
-            // Restaurant list - horizontal scrolling with limited items
-            SizedBox(
-              height: 220, // Set appropriate height for the horizontal list
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 5, // Show 5 restaurants horizontally
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 200, // Fixed width for each restaurant card
-                    margin: const EdgeInsets.only(right: 16.0),
-                    child: RestaurantCard(
-                      name: 'Restaurant ${index + 1}',
-                      cuisine: index % 2 == 0 ? 'Fast Food' : 'Local Cuisine',
+
+            // Popular Restaurants
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Popular Restaurants',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'View All',
+                        style: GoogleFonts.poppins(
+                          color: Colors.red[700],
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Restaurant Cards - Horizontal Scrolling
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 260,
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    return RestaurantCard(
+                      name: 'Burger Palace ${index + 1}',
+                      cuisine: index % 2 == 0
+                          ? 'Fast Food • Burgers'
+                          : 'Italian • Pizza',
                       rating: 4.5 + (index * 0.1),
-                      deliveryTime: '${20 + (index * 5)} mins',
-                      imageUrl: 'https://source.unsplash.com/random/300x200/?restaurant&sig=${index}',
-                    ),
-                  );
-                },
-              ),
-            ),
-            
-            const SizedBox(height: 24),
-            // Popular restaurants section
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Popular Restaurants',
-                  style: GoogleFonts.montserrat(
-                    color: Colors.black87,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // TODO: Navigate to all popular restaurants page
+                      deliveryTime: '${20 + (index * 5)} min',
+                      imageUrl:
+                          'https://source.unsplash.com/random/300x200/?restaurant&sig=${index}',
+                      distance:
+                          '${(0.8 + (index * 0.3)).toStringAsFixed(1)} km',
+                      isPromoted: index == 0 || index == 3,
+                    );
                   },
-                  child: Text(
-                    'See More',
-                    style: GoogleFonts.montserrat(
-                      color: const Color.fromRGBO(244, 67, 54, 1),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
                 ),
-              ],
+              ),
             ),
-            const SizedBox(height: 12),
-            // Remaining vertical list
-            Expanded(
-              child: ListView.builder(
-                itemCount: 3, // Show only first 3 restaurants
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: RestaurantCard(
-                      name: 'Popular Place ${index + 1}',
-                      cuisine: index % 2 == 0 ? 'Italian' : 'Chinese',
-                      rating: 4.7 + (index * 0.1),
-                      deliveryTime: '${15 + (index * 5)} mins',
-                      imageUrl: 'https://source.unsplash.com/random/300x200/?food&sig=${index + 10}',
+
+            // Popular This Week
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Popular This Week',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  );
-                },
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        'View All',
+                        style: GoogleFonts.poppins(
+                          color: Colors.red[700],
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
-// Custom menu button widget
-class CustomMenuButton extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const CustomMenuButton({
-    Key? key,
-    required this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 20,
-            height: 2,
-            margin: const EdgeInsets.only(bottom: 4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(1),
-            ),
-          ),
-          Container(
-            width: 15,
-            height: 2,
-            margin: const EdgeInsets.only(bottom: 4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(1),
-            ),
-          ),
-          Container(
-            width: 20,
-            height: 2,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(1),
-            ),
-          ),
-        ],
-      ),
-      onPressed: onPressed,
-    );
-  }
-}
-
-// Profile avatar widget
-class ProfileAvatar extends StatelessWidget {
-  const ProfileAvatar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton(
-      icon: Container(
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Icon(
-          Icons.person,
-          color: Colors.white,
-          size: 20,
-        ),
-      ),
-      color: Colors.grey[900],
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          value: 'profile',
-          child: ListTile(
-            leading: const Icon(Icons.person, color: Colors.white),
-            title: Text(
-              'Profile',
-              style: GoogleFonts.montserrat(color: Colors.white),
-            ),
-          ),
-        ),
-        PopupMenuItem(
-          value: 'orders',
-          child: ListTile(
-            leading: const Icon(Icons.shopping_cart, color: Colors.white),
-            title: Text(
-              'My Orders',
-              style: GoogleFonts.montserrat(color: Colors.white),
-            ),
-          ),
-        ),
-        PopupMenuItem(
-          value: 'settings',
-          child: ListTile(
-            leading: const Icon(Icons.settings, color: Colors.white),
-            title: Text(
-              'Settings',
-              style: GoogleFonts.montserrat(color: Colors.white),
-            ),
-          ),
-        ),
-        PopupMenuItem(
-          value: 'logout',
-          child: ListTile(
-            leading: const Icon(Icons.logout, color: Colors.white),
-            title: Text(
-              'Logout',
-              style: GoogleFonts.montserrat(color: Colors.white),
-            ),
-          ),
-        ),
-      ],
-      onSelected: (value) {
-        if (value == 'logout') {
-          _showLogoutConfirmation(context);
-        }
-        // Handle other menu options here
-      },
-    );
-  }
-
-  // Show logout confirmation dialog
-  void _showLogoutConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text(
-            'Confirm Logout',
-            style: GoogleFonts.montserrat(
-              color: Colors.grey[900],
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text(
-            'Are you sure you want to logout?',
-            style: GoogleFonts.montserrat(color: Colors.grey[700]),
-          ),
-          // Update dialog buttons text colors to Colors.grey[800]
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: Text(
-                'Cancel',
-                style: GoogleFonts.montserrat(color: Colors.grey),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                // Use named route navigation to go back to login screen
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login',
-                  (route) => false,
-                );
-              },
-              child: Text(
-                'Logout',
-                style: GoogleFonts.montserrat(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
+            // Food Item Cards
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 30),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.75,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return FoodItemCard(
+                      name: getFoodName(index),
+                      price: 5.99 + (index * 2),
+                      rating: 4.2 + (index * 0.1),
+                      imageUrl:
+                          'https://source.unsplash.com/random/300x300/?${getFoodName(index).toLowerCase()}&sig=${index + 10}',
+                      restaurant: getRestaurantName(index),
+                    );
+                  },
+                  childCount: 4,
                 ),
               ),
             ),
           ],
-        );
-      },
+        ),
+      ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: 0,
+        onTap: (index) {
+          // Handle navigation
+        },
+      ),
     );
+  }
+
+  String getFoodName(int index) {
+    final List<String> foodNames = [
+      'Chicken Burger',
+      'Pepperoni Pizza',
+      'Sushi Platter',
+      'Caesar Salad',
+      'Pasta Carbonara',
+      'Beef Tacos',
+    ];
+    return foodNames[index % foodNames.length];
+  }
+
+  String getRestaurantName(int index) {
+    final List<String> restaurantNames = [
+      'Burger King',
+      'Pizza Hut',
+      'Sushi Palace',
+      'Green Garden',
+      'Pasta House',
+      'Taco Bell',
+    ];
+    return restaurantNames[index % restaurantNames.length];
   }
 }
 
-// Helper method to build category items
-Widget _buildCategoryItem(String title, IconData icon) {
-  return Container(
-    width: 80,
-    margin: const EdgeInsets.only(right: 12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          color: const Color.fromRGBO(244, 67, 54, 1),
-          size: 32,
-        ),
-        const SizedBox(height: 8),
-        // In _buildCategoryItem
-        Text(
-          title,
-          style: GoogleFonts.montserrat(
-            color: Colors.grey[800],
-            fontSize: 12,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-// Helper method to build restaurant cards
-// Replace the _buildRestaurantCard function with a StatelessWidget class
+// Custom Restaurant Card Widget
 class RestaurantCard extends StatelessWidget {
   final String name;
   final String cuisine;
   final double rating;
   final String deliveryTime;
   final String imageUrl;
+  final String distance;
+  final bool isPromoted;
 
   const RestaurantCard({
     Key? key,
@@ -478,86 +529,120 @@ class RestaurantCard extends StatelessWidget {
     required this.rating,
     required this.deliveryTime,
     required this.imageUrl,
+    required this.distance,
+    this.isPromoted = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RestaurantDetailsScreen(
-              restaurantId: name.toLowerCase().replaceAll(' ', '_'),
-              name: name,
-              imageUrl: imageUrl,
-            ),
-          ),
-        );
+        // Navigate to restaurant details
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => RestaurantDetailsScreen(restaurantName: name)));
       },
       child: Container(
+        width: 220,
+        margin: const EdgeInsets.only(right: 16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black, width: 1),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 5,
-            )
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
           ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Restaurant image
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(11),
-                topRight: Radius.circular(11),
-              ),
-              child: Image.network(
-                imageUrl,
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    height: 120,
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        color: Color.fromRGBO(244, 67, 54, 1),
+            // Restaurant Image with Rating
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                  ),
+                  child: Image.network(
+                    imageUrl,
+                    height: 140,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      height: 140,
+                      color: Colors.grey[300],
+                      child: Center(
+                        child: Icon(Icons.restaurant,
+                            color: Colors.grey[400], size: 40),
                       ),
                     ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 120,
-                    color: Colors.grey[200],
-                    child: const Icon(
-                      Icons.restaurant,
-                      color: Colors.black54,
-                      size: 40,
+                  ),
+                ),
+                // Rating badge
+                Positioned(
+                  top: 10,
+                  right: 10,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  );
-                },
-              ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.star, color: Colors.amber, size: 16),
+                        const SizedBox(width: 2),
+                        Text(
+                          rating.toStringAsFixed(1),
+                          style: GoogleFonts.poppins(
+                            color: Colors.black87,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // Promoted badge
+                if (isPromoted)
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.red[700],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'Promoted',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            // Restaurant details
+            // Restaurant Info
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     name,
-                    style: GoogleFonts.montserrat(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
-                      fontSize: 14,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                     maxLines: 1,
@@ -566,48 +651,36 @@ class RestaurantCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     cuisine,
-                    style: GoogleFonts.montserrat(
+                    style: GoogleFonts.poppins(
                       color: Colors.grey[600],
                       fontSize: 12,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            rating.toString(),
-                            style: GoogleFonts.montserrat(
-                              color: Colors.black,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                      Icon(Icons.access_time,
+                          color: Colors.grey[600], size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        deliveryTime,
+                        style: GoogleFonts.poppins(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
                       ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.access_time,
-                            color: Colors.black87,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            deliveryTime,
-                            style: GoogleFonts.montserrat(
-                              color: Colors.black,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(width: 12),
+                      Icon(Icons.location_on,
+                          color: Colors.grey[600], size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        distance,
+                        style: GoogleFonts.poppins(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                        ),
                       ),
                     ],
                   ),
@@ -616,6 +689,278 @@ class RestaurantCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// Custom Food Item Card Widget
+class FoodItemCard extends StatelessWidget {
+  final String name;
+  final double price;
+  final double rating;
+  final String imageUrl;
+  final String restaurant;
+
+  const FoodItemCard({
+    Key? key,
+    required this.name,
+    required this.price,
+    required this.rating,
+    required this.imageUrl,
+    required this.restaurant,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Food Image
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+                child: Image.network(
+                  imageUrl,
+                  height: 120,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    height: 120,
+                    color: Colors.grey[300],
+                    child: Center(
+                      child: Icon(Icons.fastfood,
+                          color: Colors.grey[400], size: 40),
+                    ),
+                  ),
+                ),
+              ),
+              // Rating badge
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star, color: Colors.amber, size: 14),
+                      const SizedBox(width: 2),
+                      Text(
+                        rating.toStringAsFixed(1),
+                        style: GoogleFonts.poppins(
+                          color: Colors.black87,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Add to cart button
+              Positioned(
+                bottom: -15,
+                right: 10,
+                child: Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                    color: Colors.red[700],
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red.withOpacity(0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Food Info
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  restaurant,
+                  style: GoogleFonts.poppins(
+                    color: Colors.grey[600],
+                    fontSize: 11,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '\$${price.toStringAsFixed(2)}',
+                  style: GoogleFonts.poppins(
+                    color: Colors.red[700],
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Custom Bottom Navigation Bar
+class CustomBottomNavigationBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onTap;
+
+  const CustomBottomNavigationBar({
+    Key? key,
+    required this.currentIndex,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem(0, Icons.home, 'Home'),
+          _buildNavItem(1, Icons.search, 'Search'),
+          _buildCartButton(),
+          _buildNavItem(3, Icons.favorite_border, 'Favorites'),
+          _buildNavItem(4, Icons.person_outline, 'Profile'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(int index, IconData icon, String label) {
+    final bool isSelected = currentIndex == index;
+    return InkWell(
+      onTap: () => onTap(index),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            color: isSelected ? Colors.red[700] : Colors.grey[600],
+            size: 24,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              color: isSelected ? Colors.red[700] : Colors.grey[600],
+              fontSize: 10,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCartButton() {
+    return Container(
+      height: 44,
+      width: 44,
+      decoration: BoxDecoration(
+        color: Colors.red[700],
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          const Icon(
+            Icons.shopping_cart_outlined,
+            color: Colors.white,
+            size: 22,
+          ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Container(
+              height: 14,
+              width: 14,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.red[700]!, width: 1),
+              ),
+              child: Center(
+                child: Text(
+                  '3',
+                  style: GoogleFonts.poppins(
+                    color: Colors.red[700],
+                    fontSize: 8,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
