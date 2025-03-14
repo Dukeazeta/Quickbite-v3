@@ -1,396 +1,261 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'widgets/restaurant_info_widget.dart';
+import 'widgets/menu_tab_widget.dart';
+import 'widgets/reviews_tab_widget.dart';
+import 'widgets/info_tab_widget.dart';
 
 class RestaurantDetailsScreen extends StatefulWidget {
-  final String restaurantId;
-  final String name;
-  final String imageUrl;
-  
+  final String restaurantName;
+  final String? imageUrl;
+
   const RestaurantDetailsScreen({
     Key? key, 
-    required this.restaurantId,
-    required this.name,
-    required this.imageUrl,
+    required this.restaurantName,
+    this.imageUrl,
   }) : super(key: key);
 
   @override
   State<RestaurantDetailsScreen> createState() => _RestaurantDetailsScreenState();
 }
 
-class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with SingleTickerProviderStateMixin {
+class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with TickerProviderStateMixin {
   late TabController _tabController;
-  final List<Map<String, dynamic>> _menuItems = [];
-  bool _isLoading = true;
+  final ScrollController _scrollController = ScrollController();
+  bool _showAppBarTitle = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _loadMenuItems();
-  }
-
-  void _loadMenuItems() {
-    // Mock data - in a real app, this would fetch from an API
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _menuItems.addAll([
-          {
-            'id': '1',
-            'name': 'Classic Burger',
-            'description': 'Juicy beef patty with lettuce, tomato, and special sauce',
-            'price': 2500.0,
-            'image': 'https://source.unsplash.com/random/300x200?burger',
-            'category': 'Popular'
-          },
-          {
-            'id': '2',
-            'name': 'Chicken Wings',
-            'description': 'Crispy wings with your choice of sauce',
-            'price': 3000.0,
-            'image': 'https://source.unsplash.com/random/300x200?wings',
-            'category': 'Popular'
-          },
-          {
-            'id': '3',
-            'name': 'Caesar Salad',
-            'description': 'Fresh romaine lettuce with Caesar dressing and croutons',
-            'price': 1800.0,
-            'image': 'https://source.unsplash.com/random/300x200?salad',
-            'category': 'Healthy'
-          },
-          {
-            'id': '4',
-            'name': 'Pepperoni Pizza',
-            'description': 'Classic pizza with pepperoni and cheese',
-            'price': 4500.0,
-            'image': 'https://source.unsplash.com/random/300x200?pizza',
-            'category': 'Popular'
-          },
-          {
-            'id': '5',
-            'name': 'Chocolate Milkshake',
-            'description': 'Rich and creamy chocolate milkshake',
-            'price': 1500.0,
-            'image': 'https://source.unsplash.com/random/300x200?milkshake',
-            'category': 'Drinks'
-          },
-        ]);
-        _isLoading = false;
-      });
-    });
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 200 && !_showAppBarTitle) {
+      setState(() {
+        _showAppBarTitle = true;
+      });
+    } else if (_scrollController.offset <= 200 && _showAppBarTitle) {
+      setState(() {
+        _showAppBarTitle = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // Restaurant image and header
-          SliverAppBar(
-            expandedHeight: 200.0,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Image.network(
-                widget.imageUrl,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.restaurant, size: 50, color: Colors.grey),
-                ),
-              ),
-            ),
-            leading: Container(
-              margin: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.black, width: 1),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-            actions: [
-              Container(
-                margin: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.black, width: 1),
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.favorite_border, color: Colors.black),
-                  onPressed: () {
-                    // TODO: Implement favorite functionality
-                  },
-                ),
-              ),
-            ],
-          ),
-          
-          // Restaurant info
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.name,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on, size: 16, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text(
-                        '2.5 km away',
-                        style: GoogleFonts.montserrat(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      const Icon(Icons.star, size: 16, color: Colors.amber),
-                      const SizedBox(width: 4),
-                      Text(
-                        '4.8 (120+)',
-                        style: GoogleFonts.montserrat(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      const Icon(Icons.access_time, size: 16, color: Colors.grey),
-                      const SizedBox(width: 4),
-                      Text(
-                        '20-30 min',
-                        style: GoogleFonts.montserrat(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+      body: NestedScrollView(
+        controller: _scrollController,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              expandedHeight: 220,
+              floating: false,
+              pinned: true,
+              backgroundColor: Colors.white,
+              elevation: 0,
+              leading: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.local_offer, size: 16, color: Color.fromRGBO(244, 67, 54, 1)),
-                        const SizedBox(width: 4),
-                        Text(
-                          '20% off on selected items',
-                          style: GoogleFonts.montserrat(
-                            fontSize: 12,
-                            color: const Color.fromRGBO(244, 67, 54, 1),
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  child: Icon(Icons.arrow_back, color: Colors.grey[800]),
+                ),
               ),
-            ),
-          ),
-          
-          // Menu tabs
-          SliverPersistentHeader(
-            delegate: _SliverAppBarDelegate(
-              TabBar(
-                controller: _tabController,
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                indicatorColor: const Color.fromRGBO(244, 67, 54, 1),
-                tabs: const [
-                  Tab(text: 'Popular'),
-                  Tab(text: 'Meals'),
-                  Tab(text: 'Drinks'),
-                ],
-              ),
-            ),
-            pinned: true,
-          ),
-          
-          // Menu items
-          _isLoading
-              ? const SliverFillRemaining(
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Color.fromRGBO(244, 67, 54, 1),
-                    ),
+              actions: [
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                )
-              : SliverPadding(
-                  padding: const EdgeInsets.all(16.0),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final item = _menuItems[index];
-                        return _buildMenuItem(item);
-                      },
-                      childCount: _menuItems.length,
-                    ),
+                  child: IconButton(
+                    icon: Icon(Icons.favorite_border, color: Colors.grey[800]),
+                    onPressed: () {},
                   ),
                 ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          // TODO: Navigate to cart
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.share, color: Colors.grey[800]),
+                    onPressed: () {},
+                  ),
+                ),
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                title: _showAppBarTitle 
+                  ? Text(
+                      widget.restaurantName,
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ) 
+                  : null,
+                background: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Hero(
+                      tag: 'restaurant-${widget.restaurantName}',
+                      child: Image.network(
+                        widget.imageUrl ?? 'https://source.unsplash.com/random/800x600/?nigerian-food',
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey[300],
+                          child: Center(
+                            child: Icon(Icons.restaurant, color: Colors.grey[400], size: 50),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
+                          ],
+                          stops: const [0.7, 1.0],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ];
         },
-        backgroundColor: const Color.fromRGBO(244, 67, 54, 1),
-        label: Row(
+        body: Column(
           children: [
-            const Icon(Icons.shopping_cart, color: Colors.white),
-            const SizedBox(width: 8),
-            Text(
-              'View Cart',
-              style: GoogleFonts.montserrat(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            RestaurantInfoWidget(restaurantName: widget.restaurantName),
+            _buildTabBar(),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: const [
+                  MenuTabWidget(),
+                  ReviewsTabWidget(),
+                  InfoTabWidget(),
+                ],
               ),
             ),
           ],
         ),
       ),
+      floatingActionButton: Container(
+        width: MediaQuery.of(context).size.width * 0.92,
+        height: 56,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [Colors.red[700]!, Colors.red[900]!],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.red.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+          ),
+          child: Text(
+            'Start Group Order',
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  Widget _buildMenuItem(Map<String, dynamic> item) {
+  Widget _buildTabBar() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black, width: 1),
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey[200]!,
+            width: 1,
+          ),
+        ),
       ),
-      child: Row(
-        children: [
-          // Food image
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(11),
-              bottomLeft: Radius.circular(11),
-            ),
-            child: Image.network(
-              item['image'],
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                width: 100,
-                height: 100,
-                color: Colors.grey[200],
-                child: const Icon(Icons.restaurant, color: Colors.grey),
-              ),
-            ),
-          ),
-          // Food details
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item['name'],
-                    style: GoogleFonts.montserrat(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    item['description'],
-                    style: GoogleFonts.montserrat(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '₦${item['price'].toStringAsFixed(0)}',
-                        style: GoogleFonts.montserrat(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(244, 67, 54, 1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.add, color: Colors.white, size: 18),
-                          onPressed: () {
-                            // TODO: Add to cart
-                          },
-                          constraints: const BoxConstraints(
-                            minWidth: 32,
-                            minHeight: 32,
-                          ),
-                          padding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+      child: TabBar(
+        controller: _tabController,
+        labelColor: Colors.red[700],
+        unselectedLabelColor: Colors.grey[600],
+        indicatorColor: Colors.red[700],
+        indicatorWeight: 3,
+        labelStyle: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        tabs: const [
+          Tab(text: 'Menu'),
+          Tab(text: 'Reviews'),
+          Tab(text: 'Info'),
         ],
       ),
     );
-  }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  final TabBar _tabBar;
-
-  _SliverAppBarDelegate(this._tabBar);
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: Colors.white,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
   }
 }
