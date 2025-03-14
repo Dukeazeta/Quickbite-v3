@@ -864,14 +864,65 @@ class FoodItemCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  '\$${price.toStringAsFixed(2)}',
-                  style: GoogleFonts.poppins(
-                    color: Colors.red[700],
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                // In the food item card or wherever prices are displayed
+                Widget _buildFoodItemCard(String name, String description, double price, String imageUrl) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${AppConstants.currencySymbol}${price.toStringAsFixed(0)}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                
+                // Also update any other places where prices are shown
+                Widget _buildPopularFoodItem(String name, double price, String imageUrl) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${AppConstants.currencySymbol}${price.toStringAsFixed(0)}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               ],
             ),
           ),
