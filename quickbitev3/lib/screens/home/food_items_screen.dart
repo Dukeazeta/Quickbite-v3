@@ -537,8 +537,15 @@ class RestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigate to restaurant details
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => RestaurantDetailsScreen(restaurantName: name)));
+        Navigator.pushNamed(
+          context,
+          '/restaurant_details',
+          arguments: {
+            'restaurantName': name, // Pass the restaurant name
+            'imageUrl':
+                imageUrl, // Pass the image URL if available Navigator.push(context, MaterialPageRoute(builder: (context) => RestaurantDetailsScreen(restaurantName: name)));
+          },
+        );
       },
       child: Container(
         width: 220,

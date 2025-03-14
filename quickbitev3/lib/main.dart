@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/food_items_screen.dart';
+import 'screens/restaurant/restaurant_details_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +27,13 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const FoodItemsScreen(),
+        '/restaurant_details': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+          return RestaurantDetailsScreen(
+            restaurantName: args?['restaurantName'] ?? 'Nigerian Delights',
+            imageUrl: args?['imageUrl'],
+          );
+        },
       },
     );
   }
