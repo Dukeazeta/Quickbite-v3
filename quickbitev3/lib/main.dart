@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const FoodItemsScreen(),
         '/restaurant_details': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>?;
           return RestaurantDetailsScreen(
             restaurantName: args?['restaurantName'] ?? 'Nigerian Delights',
             imageUrl: args?['imageUrl'],

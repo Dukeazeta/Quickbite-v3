@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'widgets/restaurant_info_widget.dart';
 import 'widgets/menu_tab_widget.dart';
 import 'widgets/reviews_tab_widget.dart';
 import 'widgets/info_tab_widget.dart';
@@ -11,7 +9,7 @@ class RestaurantDetailsScreen extends StatefulWidget {
   final String? imageUrl;
 
   const RestaurantDetailsScreen({
-    Key? key, 
+    Key? key,
     required this.restaurantName,
     this.imageUrl,
   }) : super(key: key);
@@ -20,53 +18,58 @@ class RestaurantDetailsScreen extends StatefulWidget {
   State<RestaurantDetailsScreen> createState() => _RestaurantDetailsScreenState();
 }
 
-class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with TickerProviderStateMixin {
+class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final ScrollController _scrollController = ScrollController();
-  bool _showAppBarTitle = false;
+  bool _isFavorite = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.offset > 200 && !_showAppBarTitle) {
-      setState(() {
-        _showAppBarTitle = true;
-      });
-    } else if (_scrollController.offset <= 200 && _showAppBarTitle) {
-      setState(() {
-        _showAppBarTitle = false;
-      });
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        controller: _scrollController,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              expandedHeight: 220,
-              floating: false,
-              pinned: true,
-              backgroundColor: Colors.white,
-              elevation: 0,
-              leading: GestureDetector(
-                onTap: () => Navigator.pop(context),
+      body: CustomScrollView(
+        slivers: [
+          // App Bar with Restaurant Image
+          SliverAppBar(
+            expandedHeight: 220,
+            pinned: true,
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.arrow_back, color: Colors.black),
+              ),
+            ),
+            actions: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isFavorite = !_isFavorite;
+                  });
+                },
                 child: Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
@@ -80,11 +83,17 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with 
                       ),
                     ],
                   ),
-                  child: Icon(Icons.arrow_back, color: Colors.grey[800]),
+                  child: Icon(
+                    _isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: _isFavorite ? Colors.red : Colors.black,
+                  ),
                 ),
               ),
-              actions: [
-                Container(
+              GestureDetector(
+                onTap: () {
+                  // Share functionality
+                },
+                child: Container(
                   margin: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -97,165 +106,216 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with 
                       ),
                     ],
                   ),
-                  child: IconButton(
-                    icon: Icon(Icons.favorite_border, color: Colors.grey[800]),
-                    onPressed: () {},
-                  ),
+                  child: const Icon(Icons.share, color: Colors.black),
                 ),
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
+              ),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.network(
+                    widget.imageUrl ?? 'https://source.unsplash.com/random/800x600/?nigerian-food',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.restaurant, color: Colors.grey, size: 80),
+                    ),
                   ),
-                  child: IconButton(
-                    icon: Icon(Icons.share, color: Colors.grey[800]),
-                    onPressed: () {},
-                  ),
-                ),
-              ],
-              flexibleSpace: FlexibleSpaceBar(
-                title: _showAppBarTitle 
-                  ? Text(
-                      widget.restaurantName,
-                      style: GoogleFonts.poppins(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ) 
-                  : null,
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Hero(
-                      tag: 'restaurant-${widget.restaurantName}',
-                      child: Image.network(
-                        widget.imageUrl ?? 'https://source.unsplash.com/random/800x600/?nigerian-food',
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: Colors.grey[300],
-                          child: Center(
-                            child: Icon(Icons.restaurant, color: Colors.grey[400], size: 50),
-                          ),
-                        ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.7),
+                        ],
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.7),
-                          ],
-                          stops: const [0.7, 1.0],
-                        ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Restaurant Info
+          SliverToBoxAdapter(
+            child: _buildRestaurantInfo(),
+          ),
+
+          // Tab Bar
+          SliverPersistentHeader(
+            delegate: _SliverAppBarDelegate(
+              TabBar(
+                controller: _tabController,
+                labelColor: Colors.red[700],
+                unselectedLabelColor: Colors.grey[600],
+                indicatorColor: Colors.red[700],
+                indicatorWeight: 3,
+                labelStyle: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                unselectedLabelStyle: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                tabs: const [
+                  Tab(text: 'Menu'),
+                  Tab(text: 'Reviews'),
+                  Tab(text: 'Info'),
+                ],
+              ),
+            ),
+            pinned: true,
+          ),
+
+          // Tab Content
+          SliverFillRemaining(
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                MenuTabWidget(),
+                ReviewsTabWidget(),
+                InfoTabWidget(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRestaurantInfo() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            widget.restaurantName,
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(Icons.location_on, color: Colors.grey[600], size: 16),
+              const SizedBox(width: 4),
+              Text(
+                '123 Victoria Island, Lagos',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+              const SizedBox(width: 16),
+              Icon(Icons.access_time, color: Colors.grey[600], size: 16),
+              const SizedBox(width: 4),
+              Text(
+                '25-35 min',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.green[50],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.star, color: Colors.green[700], size: 14),
+                    const SizedBox(width: 4),
+                    Text(
+                      '4.5',
+                      style: GoogleFonts.poppins(
+                        color: Colors.green[700],
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '(328)',
+                      style: GoogleFonts.poppins(
+                        color: Colors.green[700],
+                        fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ];
-        },
-        body: Column(
-          children: [
-            RestaurantInfoWidget(restaurantName: widget.restaurantName),
-            _buildTabBar(),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  MenuTabWidget(),
-                  ReviewsTabWidget(),
-                  InfoTabWidget(),
-                ],
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.orange[50],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.local_fire_department, color: Colors.orange[700], size: 14),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Popular',
+                      style: GoogleFonts.poppins(
+                        color: Colors.orange[700],
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: Container(
-        width: MediaQuery.of(context).size.width * 0.92,
-        height: 56,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            colors: [Colors.red[700]!, Colors.red[900]!],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.red.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-          child: Text(
-            'Start Group Order',
+          const SizedBox(height: 16),
+          Text(
+            'Authentic Nigerian cuisine with traditional recipes and a vibrant atmosphere.',
             style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: Colors.grey[800],
             ),
           ),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: Colors.grey[200]!,
-            width: 1,
-          ),
-        ),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        labelColor: Colors.red[700],
-        unselectedLabelColor: Colors.grey[600],
-        indicatorColor: Colors.red[700],
-        indicatorWeight: 3,
-        labelStyle: GoogleFonts.poppins(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-        ),
-        unselectedLabelStyle: GoogleFonts.poppins(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        tabs: const [
-          Tab(text: 'Menu'),
-          Tab(text: 'Reviews'),
-          Tab(text: 'Info'),
         ],
       ),
     );
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+
+  _SliverAppBarDelegate(this.tabBar);
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.white,
+      child: tabBar,
+    );
+  }
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+
+  @override
+  bool shouldRebuild(covariant _SliverAppBarDelegate oldDelegate) {
+    return tabBar != oldDelegate.tabBar;
   }
 }

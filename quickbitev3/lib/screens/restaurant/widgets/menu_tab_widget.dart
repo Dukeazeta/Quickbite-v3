@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../utils/constants.dart';
 
 class MenuTabWidget extends StatelessWidget {
   const MenuTabWidget({Key? key}) : super(key: key);
@@ -199,7 +200,7 @@ class MenuTabWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '₦${price.toStringAsFixed(0)}',
+                        '${AppConstants.currencySymbol}${price.toStringAsFixed(0)}',
                         style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
