@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../widgets/custom_bottom_navbar.dart';
 import '../restaurant/restaurant_details_screen.dart';
 
 class FoodItemsScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
+  int _currentIndex = 0; // Add this line to define _currentIndex
 
   @override
   void initState() {
@@ -478,10 +480,31 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           ],
         ),
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: 0,
+      // Add this at the bottom of your Scaffold
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: _currentIndex,
         onTap: (index) {
-          // Handle navigation
+          setState(() {
+            _currentIndex = index;
+          });
+
+          // Handle navigation based on index
+          switch (index) {
+            case 0: // Home - already on this screen
+              break;
+            case 1: // Cart
+              // Navigate to cart screen
+              // Navigator.pushNamed(context, '/cart');
+              break;
+            case 2: // Search
+              // Navigate to search screen or show search dialog
+              // Navigator.pushNamed(context, '/search');
+              break;
+            case 3: // Profile
+              // Navigate to profile screen
+              // Navigator.pushNamed(context, '/profile');
+              break;
+          }
         },
       ),
     );
