@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/home/food_items_screen.dart';
 import 'screens/restaurant/restaurant_details_screen.dart';
+import 'screens/splash/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,8 +23,9 @@ class MyApp extends StatelessWidget {
               bodyColor: Colors.grey[800],
             ),
       ),
-      initialRoute: '/',
+      initialRoute: '/splash',
       routes: {
+        '/splash': (context) => const SplashScreen(),
         '/': (context) => const LoginScreen(),
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const FoodItemsScreen(),
