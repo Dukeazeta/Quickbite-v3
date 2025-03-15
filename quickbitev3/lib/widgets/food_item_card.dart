@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../utils/constants.dart';
 
 class FoodItemCard extends StatelessWidget {
   final String name;
   final String restaurant;
-  final double price;
+  final dynamic price;
   final String imageUrl;
   final double rating;
   final VoidCallback? onTap;
   final VoidCallback? onAddToCart;
+  final VoidCallback? onPressed;
 
   const FoodItemCard({
     Key? key,
@@ -17,24 +17,28 @@ class FoodItemCard extends StatelessWidget {
     required this.restaurant,
     required this.price,
     required this.imageUrl,
-    this.rating = 4.5,
+    required this.rating,
     this.onTap,
     this.onAddToCart,
+    this.onPressed,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap ?? onPressed ?? () {
+        Navigator.pushNamed(context, '/food-details');
+      },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
               blurRadius: 10,
-              offset: const Offset(0, 2),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -46,8 +50,8 @@ class FoodItemCard extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
                   ),
                   child: Image.network(
                     imageUrl,
@@ -57,105 +61,92 @@ class FoodItemCard extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) => Container(
                       height: 120,
                       color: Colors.grey[300],
-                      child: Center(
-                        child: Icon(Icons.fastfood,
-                            color: Colors.grey[400], size: 40),
+                      child: Icon(
+                        Icons.fastfood,
+                        size: 40,
+                        color: Colors.red[700],
                       ),
-                    ),
-                  ),
-                ),
-                // Rating badge
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.star, color: Colors.amber, size: 14),
-                        const SizedBox(width: 2),
-                        Text(
-                          rating.toStringAsFixed(1),
-                          style: GoogleFonts.poppins(
-                            color: Colors.black87,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ),
                 // Add to cart button
                 Positioned(
-                  bottom: -15,
-                  right: 10,
+                  right: 8,
+                  bottom: 8,
                   child: GestureDetector(
                     onTap: onAddToCart,
                     child: Container(
-                      height: 30,
-                      width: 30,
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.red[700],
                         shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.red.withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
                       ),
                       child: const Icon(
                         Icons.add,
                         color: Colors.white,
-                        size: 18,
+                        size: 20,
                       ),
                     ),
                   ),
                 ),
               ],
             ),
-            // Food Info
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 16, 12, 8),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Food Name
                   Text(
                     name,
                     style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 14,
                       fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: 4),
+                  // Restaurant Name
                   Text(
                     restaurant,
                     style: GoogleFonts.poppins(
                       color: Colors.grey[600],
-                      fontSize: 11,
+                      fontSize: 12,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '${AppConstants.currencySymbol}${price.toStringAsFixed(0)}',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                  // Price and Rating
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        price is int ? '₦$price' : price.toString(),
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red[700],
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            rating.toString(),
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
