@@ -5,27 +5,40 @@ import 'widgets/reviews_tab_widget.dart';
 import 'widgets/info_tab_widget.dart';
 
 class RestaurantDetailsScreen extends StatefulWidget {
-  final String restaurantName;
-  final String? imageUrl;
-
-  const RestaurantDetailsScreen({
-    Key? key,
-    required this.restaurantName,
-    this.imageUrl,
-  }) : super(key: key);
+  const RestaurantDetailsScreen({Key? key}) : super(key: key);
 
   @override
-  State<RestaurantDetailsScreen> createState() => _RestaurantDetailsScreenState();
+  State<RestaurantDetailsScreen> createState() =>
+      _RestaurantDetailsScreenState();
 }
 
-class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with SingleTickerProviderStateMixin {
+class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isFavorite = false;
+  String _restaurantName = "Restaurant";
+  String _imageUrl =
+      'https://source.unsplash.com/random/800x600/?nigerian-food';
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Get arguments from the route
+    final Map<String, dynamic>? args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null) {
+      _restaurantName = args['restaurantName'] as String? ?? "Restaurant";
+      _imageUrl = args['imageUrl'] as String? ??
+          'https://source.unsplash.com/random/800x600/?nigerian-food';
+    }
   }
 
   @override
@@ -115,11 +128,12 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with 
                 fit: StackFit.expand,
                 children: [
                   Image.network(
-                    widget.imageUrl ?? 'https://source.unsplash.com/random/800x600/?nigerian-food',
+                    _imageUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
-                      child: const Icon(Icons.restaurant, color: Colors.grey, size: 80),
+                      child: const Icon(Icons.restaurant,
+                          color: Colors.grey, size: 80),
                     ),
                   ),
                   Container(
@@ -194,7 +208,7 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with 
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.restaurantName,
+            _restaurantName,
             style: GoogleFonts.poppins(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -266,7 +280,8 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> with 
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.local_fire_department, color: Colors.orange[700], size: 14),
+                    Icon(Icons.local_fire_department,
+                        color: Colors.orange[700], size: 14),
                     const SizedBox(width: 4),
                     Text(
                       'Popular',
@@ -301,7 +316,8 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate(this.tabBar);
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Colors.white,
       child: tabBar,
