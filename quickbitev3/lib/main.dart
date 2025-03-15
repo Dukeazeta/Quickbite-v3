@@ -1,4 +1,7 @@
+// In your main.dart file, make sure to import the RestaurantDetailsScreen
 import 'package:flutter/material.dart';
+import 'screens/restaurant/restaurant_details_screen.dart';
+import 'screens/food/food_details_screen.dart';
 import 'package:quickbitev3/screens/auth/login_screen.dart';
 import 'package:quickbitev3/screens/splash/splash_screen.dart';
 import 'package:quickbitev3/screens/home/food_items_screen.dart';
@@ -6,7 +9,6 @@ import 'package:quickbitev3/screens/search/search_screen.dart';
 import 'package:quickbitev3/screens/cart/cart_screen.dart';
 import 'package:quickbitev3/screens/profile/profile_screen.dart';
 import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
-import 'screens/food/food_details_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,9 +20,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'QuickBite',
-      debugShowCheckedModeBanner: false,
+      title: 'Quickbite',
       theme: ThemeData(
+        // Your theme configuration
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
       ),
@@ -33,6 +35,9 @@ class MyApp extends StatelessWidget {
         '/cart': (context) => const CartScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/checkout': (context) => const CheckoutScreen(),
+        // Make sure to include the route for restaurant_details
+        '/': (context) => const FoodItemsScreen(), // Your home screen
+        '/restaurant_details': (context) => const RestaurantDetailsScreen(),
         '/food_details': (context) => const FoodDetailsScreen(),
       },
     );
