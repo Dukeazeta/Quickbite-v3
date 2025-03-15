@@ -6,7 +6,7 @@ import 'package:quickbitev3/screens/search/search_screen.dart';
 import 'package:quickbitev3/screens/cart/cart_screen.dart';
 import 'package:quickbitev3/screens/profile/profile_screen.dart';
 import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
-import 'package:quickbitev3/screens/food_details/food_details_screen.dart';
+import 'screens/food/food_details_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         '/cart': (context) => const CartScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/checkout': (context) => const CheckoutScreen(),
-        '/food-details': (context) => const FoodDetailsScreen(),
+        '/food_details': (context) => const FoodDetailsScreen(),
       },
     );
   }
