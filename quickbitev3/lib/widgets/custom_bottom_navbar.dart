@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -15,18 +14,16 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       height: 70,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        ),
+        borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: Colors.grey.withOpacity(0.3),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
@@ -53,12 +50,15 @@ class CustomBottomNavigationBar extends StatelessWidget {
             iconPath,
             height: 24,
             width: 24,
-            color: isSelected ? Colors.red[700] : Colors.grey[500],
+            colorFilter: ColorFilter.mode(
+              isSelected ? Colors.red[700]! : Colors.grey[500]!,
+              BlendMode.srcIn,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: isSelected ? Colors.red[700] : Colors.grey[500],
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
