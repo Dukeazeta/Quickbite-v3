@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
         // Make sure to include the route for restaurant_details
         '/': (context) => const FoodItemsScreen(), // Your home screen
         '/restaurant_details': (context) => const RestaurantDetailsScreen(),
-        '/food_details': (context) => const FoodDetailsScreen(),
+        '/food-details': (context) =>
+            const FoodDetailsScreen(), // Use hyphen to match your navigation
       },
     );
   }
