@@ -1,42 +1,39 @@
 import 'package:flutter/material.dart';
-import 'screens/auth/login_screen.dart';
-import 'screens/home/food_items_screen.dart';
-import 'screens/restaurant/restaurant_details_screen.dart';
-import 'screens/splash/splash_screen.dart';
+import 'package:quickbitev3/screens/auth/login_screen.dart';
+import 'package:quickbitev3/screens/splash/splash_screen.dart';
+import 'package:quickbitev3/screens/home/food_items_screen.dart';
+import 'package:quickbitev3/screens/search/search_screen.dart';
+import 'package:quickbitev3/screens/cart/cart_screen.dart';
+import 'package:quickbitev3/screens/profile/profile_screen.dart';
+import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
+import 'package:quickbitev3/screens/food_details/food_details_screen.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'QuickBite',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'AzeretMono',
-        textTheme: Theme.of(context).textTheme.apply(
-              fontFamily: 'AzeretMono',
-              bodyColor: Colors.grey[800],
-            ),
       ),
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => const SplashScreen(),
-        '/': (context) => const LoginScreen(),
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const FoodItemsScreen(),
-        '/restaurant_details': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments
-              as Map<String, dynamic>?;
-          return RestaurantDetailsScreen(
-            restaurantName: args?['restaurantName'] ?? 'Nigerian Delights',
-            imageUrl: args?['imageUrl'],
-          );
-        },
+        '/search': (context) => const SearchScreen(),
+        '/cart': (context) => const CartScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/checkout': (context) => const CheckoutScreen(),
+        '/food-details': (context) => const FoodDetailsScreen(),
       },
     );
   }

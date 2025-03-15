@@ -274,8 +274,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.red[700],
                     borderRadius: BorderRadius.circular(12),
@@ -600,8 +599,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
                 name: 'Jollof Rice',
                 restaurant: "Mama's Kitchen",
                 price: 1500,
-                imageUrl:
-                    'https://source.unsplash.com/random/300x200/?jollof-rice',
+                imageUrl: 'https://source.unsplash.com/random/300x200/?jollof-rice',
                 rating: 4.8,
                 onTap: () {
                   // Navigate to food details
@@ -614,8 +612,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
                 name: 'Chicken Suya',
                 restaurant: 'Suya Spot',
                 price: 2000,
-                imageUrl:
-                    'https://source.unsplash.com/random/300x200/?grilled-chicken',
+                imageUrl: 'https://source.unsplash.com/random/300x200/?grilled-chicken',
                 rating: 4.6,
                 onTap: () {
                   // Navigate to food details
@@ -641,8 +638,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
                 name: 'Fried Rice',
                 restaurant: 'Golden Dragon',
                 price: 1600,
-                imageUrl:
-                    'https://source.unsplash.com/random/300x200/?fried-rice',
+                imageUrl: 'https://source.unsplash.com/random/300x200/?fried-rice',
                 rating: 4.5,
                 onTap: () {
                   // Navigate to food details
