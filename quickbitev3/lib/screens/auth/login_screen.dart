@@ -83,9 +83,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       hintText: 'Email',
                       hintStyle: GoogleFonts.poppins(color: Colors.grey[500]),
-                      prefixIcon: Icon(Icons.email_outlined, color: Colors.red[700]),
+                      prefixIcon:
+                          Icon(Icons.email_outlined, color: Colors.red[700]),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 16),
                     ),
                   ),
                 ),
@@ -110,10 +112,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       hintText: 'Password',
                       hintStyle: GoogleFonts.poppins(color: Colors.grey[500]),
-                      prefixIcon: Icon(Icons.lock_outline, color: Colors.red[700]),
+                      prefixIcon:
+                          Icon(Icons.lock_outline, color: Colors.red[700]),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.grey[600],
                         ),
                         onPressed: () {
@@ -123,7 +128,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 16),
                     ),
                   ),
                 ),
