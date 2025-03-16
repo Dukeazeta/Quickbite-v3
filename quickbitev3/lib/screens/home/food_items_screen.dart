@@ -44,6 +44,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
     // Simulate API call with a delay
     Future.delayed(const Duration(milliseconds: 800), () {
       // Sample food items data
+      // In your _loadFoodItems() method
       _allFoodItems = [
         {
           'id': '1',
@@ -52,7 +53,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 1500,
           'rating': 4.8,
           'category': 'Nigerian',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?jollof-rice',
+          'imageUrl':
+              'https://images.pexels.com/photos/7613568/pexels-photo-7613568.jpeg',
         },
         {
           'id': '2',
@@ -62,7 +64,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'rating': 4.6,
           'category': 'Nigerian',
           'imageUrl':
-              'https://source.unsplash.com/random/300x200/?grilled-chicken',
+              'https://images.pexels.com/photos/2338407/pexels-photo-2338407.jpeg',
         },
         {
           'id': '3',
@@ -71,7 +73,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 1800,
           'rating': 4.7,
           'category': 'Nigerian',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?soup',
+          'imageUrl':
+              'https://images.pexels.com/photos/5949893/pexels-photo-5949893.jpeg',
         },
         {
           'id': '4',
@@ -80,7 +83,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 1600,
           'rating': 4.5,
           'category': 'Chinese',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?fried-rice',
+          'imageUrl':
+              'https://images.pexels.com/photos/723198/pexels-photo-723198.jpeg',
         },
         {
           'id': '5',
@@ -89,7 +93,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 1200,
           'rating': 4.3,
           'category': 'Fast Food',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?burger',
+          'imageUrl':
+              'https://images.pexels.com/photos/1639557/pexels-photo-1639557.jpeg',
         },
         {
           'id': '6',
@@ -98,7 +103,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 3500,
           'rating': 4.4,
           'category': 'Fast Food',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?pizza',
+          'imageUrl':
+              'https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg',
         },
         {
           'id': '7',
@@ -107,7 +113,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 1000,
           'rating': 4.9,
           'category': 'Desserts',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?ice-cream',
+          'imageUrl':
+              'https://images.pexels.com/photos/1352281/pexels-photo-1352281.jpeg',
         },
         {
           'id': '8',
@@ -116,7 +123,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 2200,
           'rating': 4.6,
           'category': 'Chinese',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?chow-mein',
+          'imageUrl':
+              'https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg',
         },
       ];
 
@@ -255,7 +263,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
             SliverToBoxAdapter(
               child: PromotionalBanner(
                 imageUrl:
-                    'https://source.unsplash.com/random/800x400/?nigerian-food',
+                    'https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg',
                 promoText: 'PROMO',
                 discountText: '50% OFF',
                 subtitleText: 'On your first order',
@@ -448,32 +456,87 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                _buildRestaurantCard(
-                  "Mama's Kitchen",
-                  'Nigerian',
-                  4.8,
-                  '25-35 min',
-                  'https://source.unsplash.com/random/300x200/?nigerian-restaurant',
+                RestaurantCard(
+                  name: "Mama's Kitchen",
+                  cuisine: 'Nigerian',
+                  rating: 4.8,
+                  deliveryTime: '25-35 min',
+                  imageUrl:
+                      'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg',
                 ),
-                _buildRestaurantCard(
-                  'Chicken Republic',
-                  'Fast Food',
-                  4.5,
-                  '15-25 min',
-                  'https://source.unsplash.com/random/300x200/?fast-food',
+                RestaurantCard(
+                  name: 'Chicken Republic',
+                  cuisine: 'Fast Food',
+                  rating: 4.5,
+                  deliveryTime: '15-25 min',
+                  imageUrl:
+                      'https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg',
                 ),
-                _buildRestaurantCard(
-                  'Golden Dragon',
-                  'Chinese',
-                  4.7,
-                  '30-40 min',
-                  'https://source.unsplash.com/random/300x200/?chinese-food',
+                RestaurantCard(
+                  name: 'Golden Dragon',
+                  cuisine: 'Chinese',
+                  rating: 4.7,
+                  deliveryTime: '30-40 min',
+                  imageUrl:
+                      'https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg',
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildRestaurants() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+          child: Text(
+            'Popular Restaurants',
+            style: GoogleFonts.poppins(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 220,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 8, 0, 8),
+            scrollDirection: Axis.horizontal,
+            children: [
+              RestaurantCard(
+                name: "Mama's Kitchen",
+                cuisine: 'Nigerian',
+                rating: 4.8,
+                deliveryTime: '25-35 min',
+                imageUrl:
+                    'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg',
+              ),
+              RestaurantCard(
+                name: 'Chicken Republic',
+                cuisine: 'Fast Food',
+                rating: 4.5,
+                deliveryTime: '15-25 min',
+                imageUrl:
+                    'https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg',
+              ),
+              RestaurantCard(
+                name: 'Golden Dragon',
+                cuisine: 'Chinese',
+                rating: 4.7,
+                deliveryTime: '30-40 min',
+                imageUrl:
+                    'https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg',
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
