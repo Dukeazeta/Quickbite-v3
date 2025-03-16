@@ -29,6 +29,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Quickbite',
+      debugShowCheckedModeBanner:
+          false, // Add this line to remove the debug banner
       theme: ThemeData(
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
@@ -38,8 +40,8 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const FoodItemsScreen(),
-        '/search': (context) => const SearchScreen(),    // ← This should be search
-        '/cart': (context) => const CartScreen(),        // ← This should be cart
+        '/search': (context) => const SearchScreen(), // ← This should be search
+        '/cart': (context) => const CartScreen(), // ← This should be cart
         '/profile': (context) => const ProfileScreen(),
         '/checkout': (context) => const CheckoutScreen(),
         '/': (context) => const FoodItemsScreen(),
