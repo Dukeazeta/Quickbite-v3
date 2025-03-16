@@ -31,8 +31,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildNavItem(0, 'assets/icons/home.svg', 'Home'),
-          _buildNavItem(1, 'assets/icons/cart.svg', 'Cart'),
-          _buildNavItem(2, 'assets/icons/search.svg', 'Search'),
+          _buildNavItem(1, 'assets/icons/search.svg',
+              'Search'), // Changed from cart to search
+          _buildNavItem(2, 'assets/icons/cart.svg',
+              'Cart'), // Changed from search to cart
           _buildNavItem(3, 'assets/icons/profile.svg', 'Profile'),
         ],
       ),

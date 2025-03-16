@@ -40,7 +40,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
     setState(() {
       _isLoading = true;
     });
-    
+
     // Simulate API call with a delay
     Future.delayed(const Duration(milliseconds: 800), () {
       // Sample food items data
@@ -61,7 +61,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'price': 2000,
           'rating': 4.6,
           'category': 'Nigerian',
-          'imageUrl': 'https://source.unsplash.com/random/300x200/?grilled-chicken',
+          'imageUrl':
+              'https://source.unsplash.com/random/300x200/?grilled-chicken',
         },
         {
           'id': '3',
@@ -118,10 +119,10 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           'imageUrl': 'https://source.unsplash.com/random/300x200/?chow-mein',
         },
       ];
-      
+
       // Initially, filtered items are the same as all items
       _filteredFoodItems = List.from(_allFoodItems);
-      
+
       setState(() {
         _isLoading = false;
       });
@@ -139,7 +140,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
 
     // Start with all food items
     List<Map<String, dynamic>> result = List.from(_allFoodItems);
-    
+
     // Apply price range filter
     final priceRange = _activeFilters['priceRange'] as RangeValues?;
     if (priceRange != null) {
@@ -148,7 +149,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
         return price >= priceRange.start && price <= priceRange.end;
       }).toList();
     }
-    
+
     // Apply minimum rating filter
     final minRating = _activeFilters['minRating'] as double?;
     if (minRating != null) {
@@ -157,7 +158,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
         return rating >= minRating;
       }).toList();
     }
-    
+
     // Apply category filter
     final categories = _activeFilters['categories'] as List<String>?;
     if (categories != null && categories.isNotEmpty) {
@@ -166,32 +167,36 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
         return categories.contains(category);
       }).toList();
     }
-    
+
     // Apply sorting
     final sortBy = _activeFilters['sortBy'] as String?;
     if (sortBy != null) {
       switch (sortBy) {
         case 'popularity':
           // For demo purposes, we'll use rating as a proxy for popularity
-          result.sort((a, b) => (b['rating'] as double).compareTo(a['rating'] as double));
+          result.sort((a, b) =>
+              (b['rating'] as double).compareTo(a['rating'] as double));
           break;
         case 'rating':
-          result.sort((a, b) => (b['rating'] as double).compareTo(a['rating'] as double));
+          result.sort((a, b) =>
+              (b['rating'] as double).compareTo(a['rating'] as double));
           break;
         case 'priceAsc':
-          result.sort((a, b) => (a['price'] as num).compareTo(b['price'] as num));
+          result
+              .sort((a, b) => (a['price'] as num).compareTo(b['price'] as num));
           break;
         case 'priceDesc':
-          result.sort((a, b) => (b['price'] as num).compareTo(a['price'] as num));
+          result
+              .sort((a, b) => (b['price'] as num).compareTo(a['price'] as num));
           break;
       }
     }
-    
+
     // Update the filtered items
     setState(() {
       _filteredFoodItems = result;
     });
-    
+
     // Show a message about the filter results
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -225,7 +230,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
 
             // Search Bar
             SliverToBoxAdapter(
-              child: CustomSearchBar(  // Changed from SearchBar to CustomSearchBar
+              child: CustomSearchBar(
+                // Changed from SearchBar to CustomSearchBar
                 controller: _searchController,
                 onFilterTap: () {
                   showDialog(
@@ -248,7 +254,8 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
             // Promotional Banner
             SliverToBoxAdapter(
               child: PromotionalBanner(
-                imageUrl: 'https://source.unsplash.com/random/800x400/?nigerian-food',
+                imageUrl:
+                    'https://source.unsplash.com/random/800x400/?nigerian-food',
                 promoText: 'PROMO',
                 discountText: '50% OFF',
                 subtitleText: 'On your first order',
@@ -279,13 +286,20 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
           setState(() {
             _currentIndex = index;
           });
-          // Handle navigation based on index
-          if (index == 1) {
-            Navigator.pushNamed(context, '/search');
-          } else if (index == 2) {
-            Navigator.pushNamed(context, '/cart');
-          } else if (index == 3) {
-            Navigator.pushNamed(context, '/profile');
+          // More explicit navigation handling
+          switch (index) {
+            case 0: // Home
+              // Already on home screen, no need to navigate
+              break;
+            case 1: // Search
+              Navigator.pushNamed(context, '/search');
+              break;
+            case 2: // Cart
+              Navigator.pushNamed(context, '/cart');
+              break;
+            case 3: // Profile
+              Navigator.pushNamed(context, '/profile');
+              break;
           }
         },
       ),
