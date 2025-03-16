@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:quickbitev3/widgets/safe_network_image.dart';
+// Remove unused import since safe_network_image.dart doesn't exist
 
 class FoodItemCard extends StatelessWidget {
   final String name;

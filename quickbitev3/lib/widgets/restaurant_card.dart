@@ -3,19 +3,19 @@ import 'package:google_fonts/google_fonts.dart';
 
 class RestaurantCard extends StatelessWidget {
   final String name;
-  final String cuisine;
-  final double rating;
-  final String deliveryTime;
   final String imageUrl;
+  final double rating;
+  final String cuisine;
+  final String deliveryTime;
   final VoidCallback? onTap;
 
   const RestaurantCard({
     Key? key,
     required this.name,
-    required this.cuisine,
-    required this.rating,
-    required this.deliveryTime,
     required this.imageUrl,
+    required this.rating,
+    required this.cuisine,
+    required this.deliveryTime,
     this.onTap,
   }) : super(key: key);
 
@@ -23,9 +23,10 @@ class RestaurantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap ?? () {
+        // Fix the route name to match what's in main.dart
         Navigator.pushNamed(
-          context,
-          '/restaurant-details',
+          context, 
+          '/restaurant_details',  // Changed from '/restaurant-details' to '/restaurant_details'
           arguments: {
             'restaurantName': name,
             'imageUrl': imageUrl,
