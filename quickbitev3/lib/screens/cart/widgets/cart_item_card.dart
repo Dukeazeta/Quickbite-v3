@@ -83,6 +83,8 @@ class CartItemCard extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
+                      // Inside your CartItemCard build method, update the quantity controls:
+                      
                       // Quantity controls
                       Container(
                         decoration: BoxDecoration(
@@ -91,44 +93,13 @@ class CartItemCard extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            InkWell(
+                            // Decrease quantity button
+                            GestureDetector(
                               onTap: () {
                                 if (quantity > 1) {
                                   onUpdateQuantity(id, quantity - 1);
                                 } else {
-                                  // Show confirmation dialog before removing
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(
-                                        'Remove Item',
-                                        style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
-                                      ),
-                                      content: Text(
-                                        'Remove $name from your cart?',
-                                        style: GoogleFonts.poppins(),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () => Navigator.pop(context),
-                                          child: Text(
-                                            'Cancel',
-                                            style: GoogleFonts.poppins(),
-                                          ),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            onRemove(id);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            'Remove',
-                                            style: GoogleFonts.poppins(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                  onRemove(id);
                                 }
                               },
                               child: Container(
@@ -140,6 +111,8 @@ class CartItemCard extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            
+                            // Quantity display
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8),
                               child: Text(
@@ -149,8 +122,12 @@ class CartItemCard extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            InkWell(
-                              onTap: () => onUpdateQuantity(id, quantity + 1),
+                            
+                            // Increase quantity button
+                            GestureDetector(
+                              onTap: () {
+                                onUpdateQuantity(id, quantity + 1);
+                              },
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 child: Icon(

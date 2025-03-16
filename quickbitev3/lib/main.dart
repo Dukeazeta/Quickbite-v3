@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'screens/restaurant/restaurant_details_screen.dart';
 import 'screens/food/food_details_screen.dart';
 import 'package:quickbitev3/screens/auth/login_screen.dart';
@@ -10,8 +11,29 @@ import 'package:quickbitev3/screens/cart/cart_screen.dart';
 import 'package:quickbitev3/screens/profile/profile_screen.dart';
 import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
 import 'package:quickbitev3/services/cart_service.dart';
+import 'package:flutter/foundation.dart';
 
 void main() {
+  // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Configure image cache
+  PaintingBinding.instance.imageCache.maximumSize = 200; // Increase cache size
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 100 * 1024 * 1024; // 100 MB
+  
+  // Set preferred orientations
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  
+  // Enable error reporting in debug mode
+  if (kDebugMode) {
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+    };
+  }
+  
   runApp(
     MultiProvider(
       providers: [
@@ -29,11 +51,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Quickbite',
-      debugShowCheckedModeBanner:
-          false, // Add this line to remove the debug banner
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
+        // Add error handling for images
+        colorScheme: ColorScheme.light(error: Colors.red.shade300),
       ),
       initialRoute: '/splash',
       routes: {

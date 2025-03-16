@@ -96,8 +96,10 @@ class CartService extends ChangeNotifier {
   }
   
   int get itemCount {
-    return _items.fold<int>(0, (sum, item) {
-      return sum + (item['quantity'] ?? 1) as int;
-    });
+    int count = 0;
+    for (var item in _items) {
+      count += (item['quantity'] as int? ?? 1);
+    }
+    return count;
   }
 }
