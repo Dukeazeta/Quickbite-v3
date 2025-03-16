@@ -32,7 +32,39 @@ class CartScreen extends StatelessWidget {
               if (cartItems.isNotEmpty)
                 TextButton.icon(
                   onPressed: () {
-                    cartService.clear();
+                    // Show confirmation dialog before clearing cart
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(
+                          'Clear Cart',
+                          style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        ),
+                        content: Text(
+                          'Are you sure you want to remove all items from your cart?',
+                          style: GoogleFonts.poppins(),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text(
+                              'Cancel',
+                              style: GoogleFonts.poppins(),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              cartService.clearCart();
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Clear',
+                              style: GoogleFonts.poppins(color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.delete_outline, color: Colors.red),
                   label: Text(
@@ -58,11 +90,11 @@ class CartScreen extends StatelessWidget {
                           final item = cartItems[index];
                           return CartItemCard(
                             item: item,
-                            onUpdateQuantity: (_, quantity) {
-                              cartService.updateQuantity(index, quantity);
+                            onUpdateQuantity: (id, quantity) {
+                              cartService.updateQuantity(id, quantity);
                             },
-                            onRemove: (_) {
-                              cartService.removeItem(index);
+                            onRemove: (id) {
+                              cartService.removeItem(id);
                             },
                           );
                         },
@@ -71,12 +103,12 @@ class CartScreen extends StatelessWidget {
                     
                     // Cart Summary
                     CartSummary(
-                      subtotal: cartService.subtotal,
+                      subtotal: cartService.totalAmount,
                       deliveryFee: cartService.deliveryFee,
                       total: cartService.total,
                       onCheckout: () {
                         Navigator.pushNamed(context, '/checkout', arguments: {
-                          'subtotal': cartService.subtotal,
+                          'subtotal': cartService.totalAmount,
                           'deliveryFee': cartService.deliveryFee,
                           'total': cartService.total,
                         });

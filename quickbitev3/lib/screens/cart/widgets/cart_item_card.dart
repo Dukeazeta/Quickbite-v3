@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CartItemCard extends StatelessWidget {
   final Map<String, dynamic> item;
-  final Function(int, int) onUpdateQuantity;
-  final Function(int) onRemove;
+  final Function(String, int) onUpdateQuantity;
+  final Function(String) onRemove;
 
   const CartItemCard({
     Key? key,
@@ -15,199 +15,161 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final String id = item['id'] ?? '';
+    final String name = item['name'] ?? '';
+    final String restaurant = item['restaurant'] ?? '';
+    final double price = (item['price'] ?? 0).toDouble();
+    final String imageUrl = item['imageUrl'] ?? '';
+    final int quantity = item['quantity'] ?? 1;
+
+    return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        side: BorderSide(color: Colors.grey.shade200),
       ),
-      child: Column(
-        children: [
-          // Item details
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Food Image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    item['imageUrl'],
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: 80,
-                      height: 80,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.restaurant, color: Colors.grey),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Food Image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                imageUrl,
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.grey[300],
+                  child: Icon(Icons.restaurant, color: Colors.grey[400]),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            
+            // Item Details
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
-                ),
-                
-                const SizedBox(width: 12),
-                
-                // Food Details
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Text(
+                    restaurant,
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
                     children: [
                       Text(
-                        item['name'],
+                        '₦${price.toStringAsFixed(0)}',
                         style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        item['restaurant'],
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '₦${item['price']}',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
                           color: Colors.red[700],
+                        ),
+                      ),
+                      const Spacer(),
+                      // Quantity controls
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                if (quantity > 1) {
+                                  onUpdateQuantity(id, quantity - 1);
+                                } else {
+                                  // Show confirmation dialog before removing
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text(
+                                        'Remove Item',
+                                        style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                                      ),
+                                      content: Text(
+                                        'Remove $name from your cart?',
+                                        style: GoogleFonts.poppins(),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context),
+                                          child: Text(
+                                            'Cancel',
+                                            style: GoogleFonts.poppins(),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            onRemove(id);
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            'Remove',
+                                            style: GoogleFonts.poppins(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                child: Icon(
+                                  Icons.remove,
+                                  size: 16,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                quantity.toString(),
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () => onUpdateQuantity(id, quantity + 1),
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                child: Icon(
+                                  Icons.add,
+                                  size: 16,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
-                
-                // Remove Button
-                GestureDetector(
-                  onTap: () => onRemove(item['id']),
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: Colors.red[50],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(Icons.close, size: 16, color: Colors.red[700]),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Customizations
-          if (item['size'] != null || (item['addons'] as List).isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (item['size'] != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Size: ',
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Text(
-                            item['size'],
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  if ((item['addons'] as List).isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Add-ons: ',
-                            style: GoogleFonts.poppins(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              (item['addons'] as List).join(', '),
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                 ],
               ),
             ),
-          
-          // Quantity Selector
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                GestureDetector(
-                  onTap: () => onUpdateQuantity(item['id'], item['quantity'] - 1),
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.remove, size: 16),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey[300]!),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    '${item['quantity']}',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => onUpdateQuantity(item['id'], item['quantity'] + 1),
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.red[700],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.add, size: 16, color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Renamed from SearchBar to CustomSearchBar
 class CustomSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback? onFilterTap;

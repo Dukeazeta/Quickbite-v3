@@ -1,74 +1,103 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class CartService extends ChangeNotifier {
-  final List<Map<String, dynamic>> _items = [];
+  List<Map<String, dynamic>> _items = [];
   
-  List<Map<String, dynamic>> get items => List.unmodifiable(_items);
+  List<Map<String, dynamic>> get items => _items;
   
-  int get itemCount => _items.length;
-  
-  double get subtotal {
-    double total = 0;
-    for (var item in _items) {
-      total += (item['price'] as num) * (item['quantity'] as num);
-    }
-    return total;
+  CartService() {
+    _loadCartItems();
   }
   
-  final double deliveryFee = 500;
+  // Load cart items from SharedPreferences
+  Future<void> _loadCartItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? cartData = prefs.getString('cart_items');
+      
+      if (cartData != null) {
+        final List<dynamic> decodedData = jsonDecode(cartData);
+        _items = decodedData.map((item) => Map<String, dynamic>.from(item)).toList();
+        notifyListeners();
+      }
+    } catch (e) {
+      print('Error loading cart items: $e');
+    }
+  }
   
-  double get total => subtotal + deliveryFee;
+  // Save cart items to SharedPreferences
+  Future<void> _saveCartItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String encodedData = jsonEncode(_items);
+      await prefs.setString('cart_items', encodedData);
+    } catch (e) {
+      print('Error saving cart items: $e');
+    }
+  }
   
   void addItem(Map<String, dynamic> item) {
-    // Check if the item already exists in the cart
-    final existingIndex = _items.indexWhere((i) => 
-      i['id'] == item['id'] && 
-      i['size'] == item['size'] && 
-      _areAddonsEqual(i['addons'] as List, item['addons'] as List)
-    );
+    // Check if item already exists in cart
+    final existingIndex = _items.indexWhere((i) => i['id'] == item['id']);
     
-    if (existingIndex != -1) {
-      // If the item exists, update the quantity
-      _items[existingIndex]['quantity'] = (_items[existingIndex]['quantity'] as int) + (item['quantity'] as int);
+    if (existingIndex >= 0) {
+      // Update quantity if item exists
+      _items[existingIndex]['quantity'] = (_items[existingIndex]['quantity'] ?? 1) + 1;
     } else {
-      // Otherwise, add the new item
-      _items.add(Map<String, dynamic>.from(item));
+      // Add new item with quantity 1
+      final newItem = {...item, 'quantity': 1};
+      _items.add(newItem);
     }
     
+    _saveCartItems();
     notifyListeners();
   }
   
-  void updateQuantity(int index, int quantity) {
-    if (index < 0 || index >= _items.length) return;
-    
-    if (quantity <= 0) {
-      _items.removeAt(index);
-    } else {
-      _items[index]['quantity'] = quantity;
+  void removeItem(String id) {
+    _items.removeWhere((item) => item['id'] == id);
+    _saveCartItems();
+    notifyListeners();
+  }
+  
+  void updateQuantity(String id, int quantity) {
+    final index = _items.indexWhere((item) => item['id'] == id);
+    if (index >= 0) {
+      if (quantity <= 0) {
+        _items.removeAt(index);
+      } else {
+        _items[index]['quantity'] = quantity;
+      }
+      _saveCartItems();
+      notifyListeners();
     }
-    
+  }
+  
+  void clearCart() {
+    _items = [];
+    _saveCartItems();
     notifyListeners();
   }
   
-  void removeItem(int index) {
-    if (index < 0 || index >= _items.length) return;
-    
-    _items.removeAt(index);
-    notifyListeners();
+  double get totalAmount {
+    return _items.fold(0, (sum, item) {
+      return sum + ((item['price'] ?? 0) * (item['quantity'] ?? 1));
+    });
   }
   
-  void clear() {
-    _items.clear();
-    notifyListeners();
+  double get deliveryFee {
+    // You can implement dynamic delivery fee calculation here
+    return _items.isEmpty ? 0 : 500;
   }
   
-  bool _areAddonsEqual(List list1, List list2) {
-    if (list1.length != list2.length) return false;
-    
-    for (var item in list1) {
-      if (!list2.contains(item)) return false;
-    }
-    
-    return true;
+  double get total {
+    return totalAmount + deliveryFee;
+  }
+  
+  int get itemCount {
+    return _items.fold<int>(0, (sum, item) {
+      return sum + (item['quantity'] ?? 1) as int;
+    });
   }
 }
