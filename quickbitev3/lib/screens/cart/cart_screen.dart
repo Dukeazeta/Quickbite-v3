@@ -11,8 +11,32 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Inside your CartScreen build method:
+    
     return Consumer<CartService>(
       builder: (context, cartService, child) {
+        // Show loading indicator while cart is loading
+        if (cartService.isLoading) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                'My Cart',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              backgroundColor: Colors.white,
+              elevation: 0,
+              iconTheme: const IconThemeData(color: Colors.black),
+            ),
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        
         final cartItems = cartService.items;
         
         return Scaffold(
