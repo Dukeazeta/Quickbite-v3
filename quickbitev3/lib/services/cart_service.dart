@@ -61,7 +61,7 @@ class CartService extends ChangeNotifier {
     }
   }
   
-  void addItem(Map<String, dynamic> item) {
+  void addItem(Map<String, dynamic> item) async {  // Marked async
     // Ensure item has an id
     if (!item.containsKey('id')) {
       item = {...item, 'id': DateTime.now().millisecondsSinceEpoch.toString()};
@@ -85,17 +85,17 @@ class CartService extends ChangeNotifier {
       }
     }
     
-    _saveCartItems();
+    await _saveCartItems();  // Added await
     notifyListeners();
   }
   
-  void removeItem(String id) {
+  void removeItem(String id) async {  // Marked async
     _items.removeWhere((item) => item['id'].toString() == id.toString());
-    _saveCartItems();
+    await _saveCartItems();  // Added await
     notifyListeners();
   }
   
-  void updateQuantity(String id, int quantity) {
+  void updateQuantity(String id, int quantity) async {  // Marked async
     final index = _items.indexWhere((item) => item['id'].toString() == id.toString());
     if (index >= 0) {
       if (quantity <= 0) {
@@ -103,7 +103,7 @@ class CartService extends ChangeNotifier {
       } else {
         _items[index]['quantity'] = quantity;
       }
-      _saveCartItems();
+      await _saveCartItems();  // Added await
       notifyListeners();
     }
   }
@@ -141,5 +141,15 @@ class CartService extends ChangeNotifier {
       count += (item['quantity'] is int) ? (item['quantity'] as int) : 1;
     }
     return count;
+  }
+  
+  @override
+  void dispose() {
+    _saveCartItems().then((_) {  // Ensure final save on dispose
+      if (kDebugMode) {
+        print('CartService disposed after saving ${_items.length} items');
+      }
+    });
+    super.dispose();
   }
 }

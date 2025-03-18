@@ -13,31 +13,34 @@ import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
 import 'package:quickbitev3/services/cart_service.dart';
 import 'package:flutter/foundation.dart';
 
+// Ensure initialization happens only once
+bool _initialized = false;
+
 void main() {
-  // Ensure Flutter is initialized
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // Configure image cache
-  PaintingBinding.instance.imageCache.maximumSize = 200; // Increase cache size
-  PaintingBinding.instance.imageCache.maximumSizeBytes = 100 * 1024 * 1024; // 100 MB
-  
-  // Set preferred orientations
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
-  
-  // Enable error reporting in debug mode
-  if (kDebugMode) {
-    FlutterError.onError = (FlutterErrorDetails details) {
-      FlutterError.presentError(details);
-    };
+  if (!_initialized) {
+    _initialized = true;
+    
+    // Ensure Flutter is initialized
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    // Set preferred orientations
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    
+    // Enable error reporting in debug mode
+    if (kDebugMode) {
+      FlutterError.onError = (FlutterErrorDetails details) {
+        FlutterError.presentError(details);
+      };
+    }
   }
   
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CartService()),
+        ChangeNotifierProvider(create: (_) => CartService()..loadCartItems()),
       ],
       child: const MyApp(),
     ),
@@ -55,8 +58,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
-        // Add error handling for images
-        colorScheme: ColorScheme.light(error: Colors.red.shade300),
+        primaryColor: Colors.red,
+        // Replace errorColor with colorScheme.error
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.red,
+          errorColor: Colors.red.shade300,
+        ),
       ),
       initialRoute: '/splash',
       routes: {
