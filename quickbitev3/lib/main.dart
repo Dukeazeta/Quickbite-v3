@@ -16,15 +16,15 @@ import 'package:flutter/foundation.dart';
 // Ensure initialization happens only once
 bool _initialized = false;
 
-void main() {
+void main() async {  // Make main async
+  // Ensure Flutter is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  
   if (!_initialized) {
     _initialized = true;
     
-    // Ensure Flutter is initialized
-    WidgetsFlutterBinding.ensureInitialized();
-    
     // Set preferred orientations
-    SystemChrome.setPreferredOrientations([
+    await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);

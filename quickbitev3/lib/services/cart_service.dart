@@ -10,11 +10,11 @@ class CartService extends ChangeNotifier {
   bool get isLoading => _isLoading;
   
   CartService() {
-    _loadCartItems();
+    loadCartItems();
   }
   
   // Load cart items from SharedPreferences
-  Future<void> _loadCartItems() async {
+  Future<void> loadCartItems() async {  // Add this public method
     _isLoading = true;
     notifyListeners();
     
@@ -25,19 +25,10 @@ class CartService extends ChangeNotifier {
       if (cartData != null && cartData.isNotEmpty) {
         final List<dynamic> decodedData = jsonDecode(cartData);
         _items = decodedData.map((item) => Map<String, dynamic>.from(item)).toList();
-        if (kDebugMode) {
-          print('Loaded ${_items.length} items from storage');
-        }
       } else {
         _items = [];
-        if (kDebugMode) {
-          print('No items found in storage');
-        }
       }
     } catch (e) {
-      if (kDebugMode) {
-        print('Error loading cart items: $e');
-      }
       _items = [];
     } finally {
       _isLoading = false;

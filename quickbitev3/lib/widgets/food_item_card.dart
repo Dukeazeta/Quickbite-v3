@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// Remove unused import since safe_network_image.dart doesn't exist
+import 'package:provider/provider.dart';
+import 'package:quickbitev3/services/cart_service.dart';
+import 'package:quickbitev3/utils/toast_helper.dart';
+import 'package:quickbitev3/utils/svg_icons.dart';
 
 class FoodItemCard extends StatelessWidget {
   final String name;
@@ -27,9 +30,11 @@ class FoodItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap ?? onPressed ?? () {
-        Navigator.pushNamed(context, '/food-details');
-      },
+      onTap: onTap ??
+          onPressed ??
+          () {
+            Navigator.pushNamed(context, '/food-details');
+          },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -62,11 +67,7 @@ class FoodItemCard extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) => Container(
                       height: 120,
                       color: Colors.grey[300],
-                      child: Icon(
-                        Icons.fastfood,
-                        size: 40,
-                        color: Colors.red[700],
-                      ),
+                      child: SvgIcons.fastFood(size: 40),
                     ),
                   ),
                 ),
@@ -75,18 +76,24 @@ class FoodItemCard extends StatelessWidget {
                   right: 8,
                   bottom: 8,
                   child: GestureDetector(
-                    onTap: onAddToCart,
+                    onTap: () {
+                      final cartService = Provider.of<CartService>(context, listen: false);
+                      cartService.addItem({
+                        'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                        'name': name,
+                        'price': price,
+                        'imageUrl': imageUrl,
+                        'restaurant': restaurant,
+                      });
+                      ToastHelper.showCartToast(context, '$name added to cart');
+                    },
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: Colors.red[700],
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 20,
-                      ),
+                      child: SvgIcons.add(),
                     ),
                   ),
                 ),
@@ -132,11 +139,7 @@ class FoodItemCard extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 16,
-                          ),
+                          SvgIcons.star(),
                           const SizedBox(width: 4),
                           Text(
                             rating.toString(),
