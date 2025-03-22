@@ -12,23 +12,25 @@ import 'package:quickbitev3/screens/profile/profile_screen.dart';
 import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
 import 'package:quickbitev3/services/cart_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quickbitev3/widgets/icon_test.dart';
 
 // Ensure initialization happens only once
 bool _initialized = false;
 
-void main() async {  // Make main async
-  // Ensure Flutter is initialized
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   if (!_initialized) {
     _initialized = true;
-    
+
     // Set preferred orientations
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    
+
     // Enable error reporting in debug mode
     if (kDebugMode) {
       FlutterError.onError = (FlutterErrorDetails details) {
@@ -36,7 +38,7 @@ void main() async {  // Make main async
       };
     }
   }
-  
+
   runApp(
     MultiProvider(
       providers: [
@@ -59,10 +61,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
         primaryColor: Colors.red,
-        // Replace errorColor with colorScheme.error
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.red,
           errorColor: Colors.red.shade300,
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme().apply(
+          bodyColor: Colors.black87,
+          displayColor: Colors.black,
         ),
       ),
       initialRoute: '/splash',
@@ -77,6 +82,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const FoodItemsScreen(),
         '/restaurant_details': (context) => const RestaurantDetailsScreen(),
         '/food-details': (context) => const FoodDetailsScreen(),
+        '/icon-test': (context) => const IconTest(),
       },
     );
   }

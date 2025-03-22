@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:quickbitev3/utils/app_icons.dart';
 
 class ReviewsTabWidget extends StatelessWidget {
   const ReviewsTabWidget({Key? key}) : super(key: key);
@@ -150,7 +151,7 @@ class ReviewsTabWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 4),
-          Icon(Icons.star, color: Colors.amber, size: 14),
+          AppIcons.star(size: 14, color: Colors.amber),
           const SizedBox(width: 8),
           Expanded(
             child: ClipRRect(
@@ -273,7 +274,10 @@ class ReviewsTabWidget extends StatelessWidget {
       onTap: () {},
       child: Row(
         children: [
-          Icon(icon, color: Colors.grey[600], size: 16),
+          if (icon == Icons.thumb_up_outlined)
+            AppIcons.thumbUp()
+          else if (icon == Icons.comment_outlined)
+            AppIcons.comment(),
           const SizedBox(width: 4),
           Text(
             label,
