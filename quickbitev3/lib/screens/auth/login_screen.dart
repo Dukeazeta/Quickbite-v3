@@ -35,13 +35,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 // App Logo/Name
                 Center(
                   child: Text(
-                    'QUICKBITE',
-                    style: TextStyle(
-                      fontFamily: 'Boxing',
+                    'Quickbite',
+                    style: GoogleFonts.pacifico(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      letterSpacing: 1.5,
+                      color:
+                          Colors.white, // Changed from Colors.red[700] to white
+                      letterSpacing: 1.2,
                     ),
                   ),
                 ),

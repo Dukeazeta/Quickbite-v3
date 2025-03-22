@@ -27,11 +27,10 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/icons/star.svg
-    - assets/icons/thumb-up.svg
-    - assets/icons/comment.svg
+    - assets/icons/
+    - assets/Fonts/OTF/
 
   fonts:
     - family: Boxing
       fonts:
-        - asset: assets/fonts/Boxing-Regular.otf
+        - asset: assets/Fonts/OTF/Boxing-Regular.otf

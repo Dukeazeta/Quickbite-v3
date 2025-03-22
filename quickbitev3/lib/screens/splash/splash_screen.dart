@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:google_fonts/google_fonts.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -26,13 +27,12 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'QUICKBITE',
-              style: TextStyle(
-                fontFamily: 'Boxing',
+              'Quickbite',
+              style: GoogleFonts.pacifico(
                 fontSize: 48,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 2.0,
+                color: Colors.red[700],
+                letterSpacing: 1.5,
               ),
             ),
             const SizedBox(height: 20),
