@@ -194,11 +194,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildSocialButton(Icons.facebook, Colors.blue),
+                    _buildSocialButton(Icons.account_circle, Colors.blue[700]!),
                     const SizedBox(width: 20),
-                    _buildSocialButton(Icons.g_mobiledata, Colors.red),
+                    _buildSocialButton(Icons.mail_outline, Colors.red[600]!),
                     const SizedBox(width: 20),
-                    _buildSocialButton(Icons.apple, Colors.black),
+                    _buildSocialButton(Icons.phone_iphone, Colors.black),
                   ],
                 ),
                 const SizedBox(height: 40),

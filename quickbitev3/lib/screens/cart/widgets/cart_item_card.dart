@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../models/cart_item.dart';
 
 class CartItemCard extends StatelessWidget {
-  final Map<String, dynamic> item;
+  final CartItem item;
   final Function(String, int) onUpdateQuantity;
   final Function(String) onRemove;
 
@@ -15,130 +16,115 @@ class CartItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String id = item['id'] ?? '';
-    final String name = item['name'] ?? '';
-    final String restaurant = item['restaurant'] ?? '';
-    final double price = (item['price'] ?? 0).toDouble();
-    final String imageUrl = item['imageUrl'] ?? '';
-    final int quantity = item['quantity'] ?? 1;
-
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      elevation: 0,
-      shape: RoundedRectangleBorder(
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade200),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Food Image
+            // Food image
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                imageUrl,
+                item.imageUrl,
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 80,
-                  height: 80,
-                  color: Colors.grey[300],
-                  child: Icon(Icons.restaurant, color: Colors.grey[400]),
-                ),
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    width: 80,
+                    height: 80,
+                    color: Colors.grey[200],
+                    child: Icon(
+                      Icons.image_not_supported_outlined,
+                      color: Colors.grey[400],
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 12),
             
-            // Item Details
+            // Food details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    name,
+                    item.name,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(height: 4),
                   Text(
-                    restaurant,
+                    '₦${item.price.toStringAsFixed(2)}',
                     style: GoogleFonts.poppins(
-                      color: Colors.grey[600],
-                      fontSize: 14,
+                      color: Colors.red[700],
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   const SizedBox(height: 8),
+                  
+                  // Quantity controls
                   Row(
                     children: [
-                      Text(
-                        '₦${price.toStringAsFixed(0)}',
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: Colors.red[700],
+                      _buildQuantityButton(
+                        icon: Icons.remove,
+                        onPressed: () {
+                          if (item.quantity > 1) {
+                            onUpdateQuantity(item.id, item.quantity - 1);
+                          } else {
+                            onRemove(item.id);
+                          }
+                        },
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[300]!),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '${item.quantity}',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
+                      _buildQuantityButton(
+                        icon: Icons.add,
+                        onPressed: () {
+                          onUpdateQuantity(item.id, item.quantity + 1);
+                        },
+                      ),
                       const Spacer(),
-                      // Inside your CartItemCard build method, update the quantity controls:
-                      
-                      // Quantity controls
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[100],
-                          borderRadius: BorderRadius.circular(8),
+                      IconButton(
+                        onPressed: () => onRemove(item.id),
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: Colors.red[700],
                         ),
-                        child: Row(
-                          children: [
-                            // Decrease quantity button
-                            GestureDetector(
-                              onTap: () {
-                                if (quantity > 1) {
-                                  onUpdateQuantity(id, quantity - 1);
-                                } else {
-                                  onRemove(id);
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                child: Icon(
-                                  Icons.remove,
-                                  size: 16,
-                                  color: Colors.grey[800],
-                                ),
-                              ),
-                            ),
-                            
-                            // Quantity display
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                quantity.toString(),
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            
-                            // Increase quantity button
-                            GestureDetector(
-                              onTap: () {
-                                onUpdateQuantity(id, quantity + 1);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(8),
-                                child: Icon(
-                                  Icons.add,
-                                  size: 16,
-                                  color: Colors.grey[800],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        tooltip: 'Remove item',
                       ),
                     ],
                   ),
@@ -146,6 +132,28 @@ class CartItemCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuantityButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(4),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey[300]!),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: Colors.grey[700],
         ),
       ),
     );

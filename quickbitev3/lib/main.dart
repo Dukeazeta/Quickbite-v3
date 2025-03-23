@@ -42,7 +42,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CartService()..loadCartItems()),
+        ChangeNotifierProvider(create: (_) => CartService()),
       ],
       child: const MyApp(),
     ),
@@ -61,11 +61,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
         scaffoldBackgroundColor: Colors.white,
         primaryColor: Colors.red,
+        // Remove the fontFamily property as we'll use GoogleFonts directly
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.red,
           errorColor: Colors.red.shade300,
         ),
-        textTheme: GoogleFonts.poppinsTextTheme().apply(
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(
           bodyColor: Colors.black87,
           displayColor: Colors.black,
         ),

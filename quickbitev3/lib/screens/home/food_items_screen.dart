@@ -350,35 +350,117 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
               ),
             ],
           ),
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  shape: BoxShape.circle,
+          // Removed profile icon, kept only notification icon
+          GestureDetector(
+            onTap: () {
+              _showNotificationsDialog(context);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.notifications_none_outlined,
+                color: Colors.grey[700],
+                size: 24,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Add this method to handle notification icon tap
+  void _showNotificationsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Notifications',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                _buildNotificationItem(
+                  'Order #1234 has been delivered',
+                  'Your order from Mama\'s Kitchen has been delivered.',
+                  '10 mins ago',
                 ),
-                child: Icon(
-                  Icons.notifications_none_outlined,
-                  color: Colors.grey[700],
-                  size: 24,
+                _buildNotificationItem(
+                  'Special Offer!',
+                  'Get 20% off on your next order with code QUICK20',
+                  '2 hours ago',
+                ),
+                _buildNotificationItem(
+                  'Order Confirmed',
+                  'Your order #1234 has been confirmed and is being prepared.',
+                  '1 day ago',
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Close',
+                style: GoogleFonts.poppins(
+                  color: Colors.red[700],
                 ),
               ),
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/profile');
-                },
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.grey[300],
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ),
-            ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Add this helper method to create notification items
+  Widget _buildNotificationItem(String title, String message, String time) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            message,
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            time,
+            style: GoogleFonts.poppins(
+              fontSize: 10,
+              color: Colors.grey[500],
+              fontStyle: FontStyle.italic,
+            ),
           ),
         ],
       ),
