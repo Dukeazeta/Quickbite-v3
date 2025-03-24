@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  image_picker: ^1.0.4
   provider: ^6.0.5
   shared_preferences: ^2.2.0
   flutter_bloc: ^8.1.4
@@ -22,6 +23,7 @@ dependencies:
   uuid: ^4.2.1
   google_maps_flutter: ^2.11.0
   intl: ^0.20.2
+  url_launcher: ^6.2.2
 
 dev_dependencies:
   flutter_test:
@@ -32,7 +34,11 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icons/
+    - assets/images/
+    - assets/svg/  # Add this line for SVG files
   fonts:
     - family: Boxing
       fonts:
         - asset: assets/Fonts/OTF/Boxing-Regular.otf
+    # If you want to use Google Fonts instead of local fonts, you can remove this section
+    # and rely on the google_fonts package

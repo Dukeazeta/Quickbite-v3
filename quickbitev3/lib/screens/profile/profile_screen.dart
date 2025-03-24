@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
 import '../../models/user.dart';
-import '../address/address_list_screen.dart';
-import '../order/order_history_screen.dart';
-import '../payment/payment_methods_screen.dart';
 import '../auth/login_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -16,19 +15,16 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool _isLoading = true;
   User? _user;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Instead of calling directly, use a post-frame callback
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadUserProfile();
-    });
+    _loadUserData();
   }
 
-  Future<void> _loadUserProfile() async {
+  Future<void> _loadUserData() async {
     setState(() {
       _isLoading = true;
     });
@@ -36,20 +32,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final authService = Provider.of<AuthService>(context, listen: false);
       final user = await authService.getCurrentUser();
-
-      setState(() {
-        _user = user;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      // Now it's safe to use ScaffoldMessenger
+      
       if (mounted) {
+        setState(() {
+          _user = user;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to load profile: $e'),
+            content: Text('Error loading profile: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -57,24 +54,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _logout() async {
-    try {
-      final authService = Provider.of<AuthService>(context, listen: false);
-      await authService.logout();
-
-      // Navigate to login screen and clear all previous routes
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-        (route) => false,
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to logout: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
+  void _navigateToEditProfile() async {
+    if (_user == null) return;
+    
+    final result = await Navigator.pushNamed(
+      context, 
+      '/edit_profile',
+      arguments: _user,
+    );
+    
+    if (result == true) {
+      _loadUserData();
     }
   }
 
@@ -88,9 +78,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+        ],
       ),
       body: _isLoading
           ? const Center(
@@ -101,12 +96,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildProfileHeader(),
                   const SizedBox(height: 24),
-                  _buildMenuItems(),
-                  const SizedBox(height: 24),
-                  _buildLogoutButton(),
+                  _buildMenuSection(),
                 ],
               ),
             ),
@@ -132,18 +126,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
           CircleAvatar(
             radius: 40,
             backgroundColor: Colors.grey[200],
-            backgroundImage: _user?.profilePicture != null &&
-                    _user!.profilePicture!.isNotEmpty
-                ? NetworkImage(_user!.profilePicture!)
-                : null,
-            child:
-                _user?.profilePicture == null || _user!.profilePicture!.isEmpty
-                    ? Icon(
-                        Icons.person,
-                        size: 40,
-                        color: Colors.grey[400],
-                      )
-                    : null,
+            child: _user?.profilePicture != null && _user!.profilePicture!.isNotEmpty
+                ? ClipOval(
+                    child: _user!.profilePicture!.endsWith('.svg')
+                        ? SvgPicture.asset(
+                            _user!.profilePicture!,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.network(
+                            _user!.profilePicture!,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Icon(
+                                Icons.person,
+                                size: 40,
+                                color: Colors.grey[400],
+                              );
+                            },
+                          ),
+                  )
+                : Icon(
+                    Icons.person,
+                    size: 40,
+                    color: Colors.grey[400],
+                  ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -151,23 +161,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _user?.name ?? 'User',
+                  _user?.name ?? 'Guest User',
                   style: GoogleFonts.poppins(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _user?.email ?? 'email@example.com',
+                  _user?.email ?? 'guest@example.com',
                   style: GoogleFonts.poppins(
+                    fontSize: 14,
                     color: Colors.grey[600],
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _user?.phone ?? '+234 XXX XXX XXXX',
+                  _user?.phone ?? 'No phone number',
                   style: GoogleFonts.poppins(
+                    fontSize: 14,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -175,20 +187,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/edit-profile');
-            },
-            icon: Icon(
-              Icons.edit,
-              color: Colors.red[700],
+            icon: const Icon(
+              Icons.edit_outlined,
+              color: Colors.red,
             ),
+            onPressed: _navigateToEditProfile,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMenuItems() {
+  Widget _buildMenuSection() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -207,38 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: Icons.shopping_bag_outlined,
             title: 'My Orders',
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const OrderHistoryScreen(),
-                ),
-              );
-            },
-          ),
-          _buildDivider(),
-          _buildMenuItem(
-            icon: Icons.location_on_outlined,
-            title: 'My Addresses',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddressListScreen(),
-                ),
-              );
-            },
-          ),
-          _buildDivider(),
-          _buildMenuItem(
-            icon: Icons.payment_outlined,
-            title: 'Payment Methods',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PaymentMethodsScreen(),
-                ),
-              );
+              Navigator.pushNamed(context, '/orders');
             },
           ),
           _buildDivider(),
@@ -251,18 +230,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           _buildDivider(),
           _buildMenuItem(
-            icon: Icons.settings_outlined,
-            title: 'Settings',
+            icon: Icons.location_on_outlined,
+            title: 'My Addresses',
             onTap: () {
-              Navigator.pushNamed(context, '/settings');
+              Navigator.pushNamed(context, '/addresses');
             },
           ),
           _buildDivider(),
           _buildMenuItem(
-            icon: Icons.help_outline,
-            title: 'Help & Support',
+            icon: Icons.payment_outlined,
+            title: 'Payment Methods',
+            onTap: () {
+              Navigator.pushNamed(context, '/payments');
+            },
+          ),
+          _buildDivider(),
+          _buildMenuItem(
+            icon: Icons.support_agent_outlined,
+            title: 'Support',
             onTap: () {
               Navigator.pushNamed(context, '/support');
+            },
+          ),
+          _buildDivider(),
+          _buildMenuItem(
+            icon: Icons.logout,
+            title: 'Logout',
+            onTap: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(
+                    'Logout',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  content: Text(
+                    'Are you sure you want to logout?',
+                    style: GoogleFonts.poppins(),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(
+                        'Cancel',
+                        style: GoogleFonts.poppins(
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                      child: Text(
+                        'Logout',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+              
+              if (confirmed == true) {
+                final authService = Provider.of<AuthService>(context, listen: false);
+                await authService.logout();
+                if (mounted) {
+                  Navigator.pushReplacementNamed(context, '/login');
+                }
+              }
             },
           ),
         ],
@@ -286,7 +326,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Icon(
               icon,
-              color: Colors.red[700],
+              color: Colors.red,
               size: 24,
             ),
             const SizedBox(width: 16),
@@ -295,12 +335,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_forward_ios,
-              color: Colors.grey[400],
+              color: Colors.grey,
               size: 16,
             ),
           ],
@@ -310,36 +351,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildDivider() {
-    return Divider(
+    return const Divider(
       height: 1,
       thickness: 1,
-      color: Colors.grey[200],
       indent: 56,
-    );
-  }
-
-  Widget _buildLogoutButton() {
-    return ElevatedButton(
-      onPressed: _logout,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.red[50],
-        foregroundColor: Colors.red[700],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 12,
-        ),
-        minimumSize: const Size(double.infinity, 50),
-      ),
-      child: Text(
-        'Logout',
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w500,
-          fontSize: 16,
-        ),
-      ),
+      endIndent: 16,
     );
   }
 }

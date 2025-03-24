@@ -10,7 +10,15 @@ import 'package:quickbitev3/screens/search/search_screen.dart';
 import 'package:quickbitev3/screens/cart/cart_screen.dart';
 import 'package:quickbitev3/screens/profile/profile_screen.dart';
 import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
+import 'package:quickbitev3/screens/settings/settings_screen.dart';
+import 'package:quickbitev3/screens/support/support_screen.dart';
+import 'package:quickbitev3/screens/orders/orders_screen.dart'; // Add this import
+import 'package:quickbitev3/screens/profile/favorites_screen.dart'; // Add this import
+import 'package:quickbitev3/screens/profile/addresses_screen.dart'; // Add this import
+import 'package:quickbitev3/screens/profile/payment_methods_screen.dart'; // Add this import
+import 'package:quickbitev3/screens/profile/edit_profile_screen.dart'; // Add this import
 import 'package:quickbitev3/services/cart_service.dart';
+import 'package:quickbitev3/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,6 +51,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CartService()),
+        ChangeNotifierProvider(create: (_) => AuthService()),
       ],
       child: const MyApp(),
     ),
@@ -55,35 +64,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Quickbite',
+      title: 'QuickBite',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.red,
-        scaffoldBackgroundColor: Colors.white,
-        primaryColor: Colors.red,
-        // Remove the fontFamily property as we'll use GoogleFonts directly
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.red,
-          errorColor: Colors.red.shade300,
-        ),
-        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme).apply(
-          bodyColor: Colors.black87,
-          displayColor: Colors.black,
+        scaffoldBackgroundColor: Colors.grey[50],
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          titleTextStyle: GoogleFonts.poppins(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
-      initialRoute: '/splash',
+      home: const SplashScreen(),
       routes: {
-        '/splash': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/home': (context) => const FoodItemsScreen(),
         '/search': (context) => const SearchScreen(),
         '/cart': (context) => const CartScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/checkout': (context) => const CheckoutScreen(),
-        '/': (context) => const FoodItemsScreen(),
-        '/restaurant_details': (context) => const RestaurantDetailsScreen(),
-        '/food-details': (context) => const FoodDetailsScreen(),
-        '/icon-test': (context) => const IconTest(),
+        '/settings': (context) => const SettingsScreen(),
+        '/support': (context) => const SupportScreen(),
+        '/orders': (context) => const OrdersScreen(),
+        '/favorites': (context) => const FavoritesScreen(),
+        '/addresses': (context) => const AddressesScreen(),
+        '/payments': (context) => const PaymentMethodsScreen(),
+        // Add other routes as needed
       },
     );
   }
