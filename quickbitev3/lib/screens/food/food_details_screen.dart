@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../../services/cart_service.dart';
+import '../../models/cart_item.dart';
+import '../../utils/constants.dart';
 import 'widgets/food_details_header.dart';
 import 'widgets/food_quantity_selector.dart';
 import 'widgets/food_size_selector.dart';
@@ -36,6 +40,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
     }
   }
 
+  // Update the _updateTotalPrice method to use the actual price
   void _updateTotalPrice() {
     double basePrice = (_foodItem['price'] as num).toDouble();
     double addonPrice = 0;
@@ -92,18 +97,53 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
     });
   }
 
+  // In your _addToCart method
   void _addToCart() {
-    // In a real app, this would add the item to a cart service/provider
-    final snackBar = SnackBar(
-      content: Text(
-        '${_foodItem['name']} added to cart!',
-        style: GoogleFonts.poppins(),
-      ),
-      backgroundColor: Colors.green,
-      duration: const Duration(seconds: 2),
-    );
-    
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    try {
+      // Get the CartService from Provider
+      final cartService = Provider.of<CartService>(context, listen: false);
+      
+      // Create a CartItem from the food details
+      final cartItem = CartItem(
+        id: _foodItem['id'] ?? DateTime.now().toString(),
+        name: _foodItem['name'] ?? 'Food Item',
+        price: _totalPrice,
+        quantity: _quantity,
+        imageUrl: _foodItem['imageUrl'] ?? '',
+        restaurantName: _foodItem['restaurant'] ?? 'Restaurant',
+        restaurantId: _foodItem['restaurantId'] ?? '1',
+      );
+      
+      // Add to cart
+      cartService.addToCart(cartItem);
+      
+      // Show success message
+      final snackBar = SnackBar(
+        content: Text(
+          '${_foodItem['name']} added to cart!',
+          style: GoogleFonts.poppins(),
+        ),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'VIEW CART',
+          textColor: Colors.white,
+          onPressed: () {
+            Navigator.pushNamed(context, '/cart');
+          },
+        ),
+      );
+      
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } catch (e) {
+      print('Error adding to cart: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add to cart: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override

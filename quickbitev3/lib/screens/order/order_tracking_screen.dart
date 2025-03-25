@@ -5,10 +5,11 @@ import '../../widgets/delivery_map.dart';
 import '../../widgets/order_status_timeline.dart';
 import '../../models/order.dart';
 import '../../services/order_service.dart';
+import 'package:quickbitev3/utils/constants.dart';
 
 class OrderTrackingScreen extends StatefulWidget {
   final String orderId;
-  
+
   const OrderTrackingScreen({
     Key? key,
     required this.orderId,
@@ -28,7 +29,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
   void initState() {
     super.initState();
     _loadOrderDetails();
-    
+
     // Set up a timer to refresh order status every 30 seconds
     _refreshTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       _refreshOrderStatus();
@@ -39,7 +40,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final order = await _orderService.getOrderById(widget.orderId);
       setState(() {

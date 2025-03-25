@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quickbitev3/screens/food/food_details_screen.dart';
+import 'package:quickbitev3/screens/restaurant/restaurant_details_screen.dart';
 import '../../widgets/custom_bottom_navbar.dart';
 import '../../widgets/food_item_card.dart';
 // Update the import to use the renamed widget
@@ -27,6 +29,10 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
   List<Map<String, dynamic>> _filteredFoodItems = [];
   bool _isLoading = true;
 
+  // Add this as a class variable
+  // Make sure you have a list of restaurants defined as a class variable
+  List<Map<String, dynamic>> _restaurants = [];
+  
   @override
   void initState() {
     super.initState();
@@ -500,9 +506,10 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
     );
   }
 
+  // Inside the _buildPopularRestaurants method
   Widget _buildPopularRestaurants() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+      padding: const EdgeInsets.fromLTRB(20, 24, 0, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -517,53 +524,59 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  // Navigate to all restaurants
-                },
-                child: Text(
-                  'See All',
-                  style: GoogleFonts.poppins(
-                    color: Colors.red[700],
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
+              Padding(
+                padding: const EdgeInsets.only(right: 20),
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to all restaurants
+                  },
+                  child: Text(
+                    'See All',
+                    style: GoogleFonts.poppins(
+                      color: Colors.red[700],
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
+          
+          // Restaurant list
           SizedBox(
             height: 200,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                RestaurantCard(
-                  name: "Mama's Kitchen",
-                  cuisine: 'Nigerian',
-                  rating: 4.8,
-                  deliveryTime: '25-35 min',
-                  imageUrl:
-                      'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg',
+            child: _isLoading 
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _restaurants.length,
+                  itemBuilder: (context, index) {
+                    final restaurant = _restaurants[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RestaurantDetailsScreen(),
+                              settings: RouteSettings(arguments: restaurant),
+                            ),
+                          );
+                        },
+                        child: RestaurantCard(
+                          name: restaurant['name'],
+                          cuisine: restaurant['cuisine'],
+                          rating: restaurant['rating'],
+                          deliveryTime: restaurant['deliveryTime'],
+                          imageUrl: restaurant['imageUrl'],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                RestaurantCard(
-                  name: 'Chicken Republic',
-                  cuisine: 'Fast Food',
-                  rating: 4.5,
-                  deliveryTime: '15-25 min',
-                  imageUrl:
-                      'https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg',
-                ),
-                RestaurantCard(
-                  name: 'Golden Dragon',
-                  cuisine: 'Chinese',
-                  rating: 4.7,
-                  deliveryTime: '30-40 min',
-                  imageUrl:
-                      'https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg',
-                ),
-              ],
-            ),
           ),
         ],
       ),
@@ -856,6 +869,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
               itemCount: _filteredFoodItems.length,
               itemBuilder: (context, index) {
                 final item = _filteredFoodItems[index];
+                // Inside _buildPopularFoodItems method, replace the onTap in FoodItemCard
                 return FoodItemCard(
                   name: item['name'],
                   restaurant: item['restaurant'],
@@ -863,11 +877,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
                   imageUrl: item['imageUrl'],
                   rating: item['rating'],
                   onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/food-details',
-                      arguments: item,
-                    );
+                    _navigateToFoodDetails(context, item);
                   },
                   onAddToCart: () {
                     // Add to cart logic
@@ -885,6 +895,27 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
               },
             ),
         ],
+      ),
+    );
+  }
+
+  // Add these methods properly inside the class, not as loose code
+  void _navigateToFoodDetails(BuildContext context, Map<String, dynamic> foodItem) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FoodDetailsScreen(),
+        settings: RouteSettings(arguments: foodItem),
+      ),
+    );
+  }
+
+  void _navigateToRestaurantDetails(BuildContext context, Map<String, dynamic> restaurant) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RestaurantDetailsScreen(),
+        settings: RouteSettings(arguments: restaurant),
       ),
     );
   }

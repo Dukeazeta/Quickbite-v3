@@ -2,78 +2,87 @@ import 'package:flutter/foundation.dart';
 import '../models/cart_item.dart';
 
 class CartService extends ChangeNotifier {
-  final List<Map<String, dynamic>> _items = [];
+  final List<CartItem> _items = [];
   
-  List<Map<String, dynamic>> get items => _items;
+  // Add these properties
+  double _deliveryFee = 500.0; // Default delivery fee
+  double _discount = 0.0;
+  
+  List<CartItem> get items => List.unmodifiable(_items);
   
   int get itemCount => _items.length;
   
   double get totalAmount {
-    return _items.fold(0, (sum, item) {
-      return sum + (item['price'] * (item['quantity'] ?? 1));
-    });
+    return _items.fold(0, (sum, item) => sum + (item.price * item.quantity));
   }
   
-  double get deliveryFee {
-    return _items.isEmpty ? 0 : 500.0;
+  // Add these getters
+  double get deliveryFee => _deliveryFee;
+  double get discount => _discount;
+  double get total => totalAmount + _deliveryFee - _discount;
+  
+  // You might want to add setters too
+  set deliveryFee(double value) {
+    _deliveryFee = value;
+    notifyListeners();
   }
   
-  double get total {
-    return totalAmount + deliveryFee;
+  set discount(double value) {
+    _discount = value;
+    notifyListeners();
   }
   
-  void addItem(Map<String, dynamic> item) {
+  Future<List<CartItem>> getCartItems() async {
+    // In a real app, this might fetch from local storage or an API
+    return _items;
+  }
+  
+  void addToCart(CartItem item) {
     // Check if the item already exists in the cart
-    final existingItemIndex = _items.indexWhere((i) => i['id'] == item['id']);
+    final existingIndex = _items.indexWhere((i) => i.id == item.id);
     
-    if (existingItemIndex >= 0) {
-      // If item exists, increment quantity
-      _items[existingItemIndex]['quantity'] = (_items[existingItemIndex]['quantity'] ?? 1) + 1;
+    if (existingIndex >= 0) {
+      // Update quantity if item exists
+      _items[existingIndex] = CartItem(
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: _items[existingIndex].quantity + item.quantity,
+        imageUrl: item.imageUrl,
+        restaurantName: item.restaurantName,
+        restaurantId: item.restaurantId,
+      );
     } else {
-      // Otherwise add new item with quantity 1
-      _items.add({
-        ...item,
-        'quantity': 1,
-        'restaurantId': item['restaurantId'] ?? 'default_restaurant_id',
-      });
+      // Add new item
+      _items.add(item);
     }
     
     notifyListeners();
   }
   
-  // Replace the existing clear() method with clearCart()
+  void updateCartItemQuantity(String id, int quantity) {
+    final index = _items.indexWhere((item) => item.id == id);
+    if (index >= 0) {
+      _items[index] = CartItem(
+        id: _items[index].id,
+        name: _items[index].name,
+        price: _items[index].price,
+        quantity: quantity,
+        imageUrl: _items[index].imageUrl,
+        restaurantName: _items[index].restaurantName,
+        restaurantId: _items[index].restaurantId,
+      );
+      notifyListeners();
+    }
+  }
+  
+  void removeFromCart(String id) {
+    _items.removeWhere((item) => item.id == id);
+    notifyListeners();
+  }
+  
   void clearCart() {
     _items.clear();
     notifyListeners();
   }
-  
-  // Add this method to get cart items
-  Future<List<CartItem>> getCartItems() async {
-    // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    // Convert the internal items to CartItem objects
-    return _items.map((item) => CartItem(
-      id: item['id'],
-      name: item['name'],
-      price: item['price'] is int ? item['price'].toDouble() : item['price'],
-      quantity: item['quantity'] ?? 1,
-      imageUrl: item['imageUrl'],
-      restaurantName: item['restaurant'],
-      restaurantId: item['restaurantId'] ?? 'default_restaurant_id',
-    )).toList();
-  }
-  
-  void updateCartItemQuantity(String id, int quantity) {
-      final index = _items.indexWhere((item) => item['id'] == id);
-      if (index >= 0) {
-        _items[index]['quantity'] = quantity;
-        notifyListeners();
-      }
-    }
-  
-  void removeFromCart(String id) {
-      _items.removeWhere((item) => item['id'] == id);
-      notifyListeners();
-    }
 }

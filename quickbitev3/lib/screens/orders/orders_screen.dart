@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quickbitev3/utils/constants.dart';
 
 class OrdersScreen extends StatelessWidget {
   const OrdersScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class OrdersScreen extends StatelessWidget {
     final orderDate = DateTime.now().subtract(Duration(days: index * 2));
     final orderNumber = 'QB${10000 + index}';
     final orderStatus = index == 0 ? 'Delivered' : (index == 1 ? 'On the way' : 'Processing');
-    final orderAmount = 15.99 + (index * 5.75);
+    final orderAmount = 15.99 + (index * 5.75); // This is in USD
     final items = 2 + index;
 
     return Container(
@@ -101,7 +102,7 @@ class OrdersScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '\$${orderAmount.toStringAsFixed(2)}',
+                  AppConstants.convertAndFormatPrice(orderAmount), // Convert USD to Naira
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -109,7 +110,12 @@ class OrdersScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to order details
+                    // Inside your onPressed or onTap method:
+                      Navigator.pushNamed(
+                        context,
+                        '/track_order',
+                        arguments: {'orderId': 'ORD437421'}, // Replace with actual order ID
+                      );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,

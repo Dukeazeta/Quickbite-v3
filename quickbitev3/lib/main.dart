@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:quickbitev3/screens/order/order_tracking_screen.dart';
 import 'screens/restaurant/restaurant_details_screen.dart';
 import 'screens/food/food_details_screen.dart';
 import 'package:quickbitev3/screens/auth/login_screen.dart';
@@ -80,11 +81,13 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashScreen(),
+      home: const SplashScreen(), // Remove this line or remove the '/' route
+      // In your routes section
       routes: {
-        '/login': (context) => const LoginScreen(),
-        '/home': (context) => const FoodItemsScreen(),
-        '/search': (context) => const SearchScreen(),
+        // Remove this route since you have home defined
+        // '/': (context) => const FoodItemsScreen(),
+        '/food-details': (context) => const FoodDetailsScreen(),
+        '/restaurant-details': (context) => const RestaurantDetailsScreen(),
         '/cart': (context) => const CartScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/checkout': (context) => const CheckoutScreen(),
@@ -94,7 +97,20 @@ class MyApp extends StatelessWidget {
         '/favorites': (context) => const FavoritesScreen(),
         '/addresses': (context) => const AddressesScreen(),
         '/payments': (context) => const PaymentMethodsScreen(),
+        // Remove the direct route and use a route builder instead
         // Add other routes as needed
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/track_order') {
+          // Extract the orderId from the arguments
+          final args = settings.arguments as Map<String, dynamic>;
+          final orderId = args['orderId'] as String;
+
+          return MaterialPageRoute(
+            builder: (context) => OrderTrackingScreen(orderId: orderId),
+          );
+        }
+        return null;
       },
     );
   }

@@ -110,11 +110,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       
       // Convert cart items to order items
       final orderItems = cartService.items.map((item) => OrderItem(
-        id: item['id'],
-        name: item['name'],
-        price: item['price'] is int ? item['price'].toDouble() : item['price'],
-        quantity: item['quantity'] ?? 1,
-        imageUrl: item['imageUrl'],
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        imageUrl: item.imageUrl,
       )).toList();
       
       // Place the order
@@ -124,7 +124,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         paymentMethod: _selectedPaymentMethod!.type,
         subtotal: cartService.totalAmount,
         deliveryFee: cartService.deliveryFee,
-        discount: 0, // Apply any discounts here
+        discount: cartService.discount, // Use the discount from cart service
       );
       
       // Clear the cart after successful order

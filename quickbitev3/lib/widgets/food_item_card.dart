@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:quickbitev3/services/cart_service.dart';
 import 'package:quickbitev3/utils/toast_helper.dart';
+import 'package:quickbitev3/models/cart_item.dart';
 import 'package:quickbitev3/utils/svg_icons.dart';
 
 class FoodItemCard extends StatelessWidget {
@@ -72,19 +73,27 @@ class FoodItemCard extends StatelessWidget {
                   ),
                 ),
                 // Add to cart button
+                // Positioned add to cart button
                 Positioned(
                   right: 8,
                   bottom: 8,
                   child: GestureDetector(
                     onTap: () {
                       final cartService = Provider.of<CartService>(context, listen: false);
-                      cartService.addItem({
-                        'id': DateTime.now().millisecondsSinceEpoch.toString(),
-                        'name': name,
-                        'price': price,
-                        'imageUrl': imageUrl,
-                        'restaurant': restaurant,
-                      });
+                      
+                      // Create a CartItem object instead of using a Map
+                      final cartItem = CartItem(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        name: name,
+                        price: price is int ? price.toDouble() : price,
+                        quantity: 1,
+                        imageUrl: imageUrl,
+                        restaurantName: restaurant,
+                        restaurantId: '1', // You might want to pass this as a parameter
+                      );
+                      
+                      // Use addToCart instead of addItem
+                      cartService.addToCart(cartItem);
                       ToastHelper.showCartToast(context, '$name added to cart');
                     },
                     child: Container(
