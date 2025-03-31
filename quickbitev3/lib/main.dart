@@ -4,20 +4,18 @@ import 'package:flutter/services.dart';
 import 'package:quickbitev3/screens/order/order_tracking_screen.dart';
 import 'screens/restaurant/restaurant_details_screen.dart';
 import 'screens/food/food_details_screen.dart';
-import 'package:quickbitev3/screens/auth/login_screen.dart';
-import 'package:quickbitev3/screens/splash/splash_screen.dart';
-import 'package:quickbitev3/screens/home/food_items_screen.dart';
-import 'package:quickbitev3/screens/search/search_screen.dart';
-import 'package:quickbitev3/screens/cart/cart_screen.dart';
-import 'package:quickbitev3/screens/profile/profile_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/splash/splash_screen.dart';
+import 'screens/home/food_items_screen.dart';
+import 'screens/profile/profile_screen.dart';
 import 'package:quickbitev3/screens/checkout/checkout_screen.dart';
 import 'package:quickbitev3/screens/settings/settings_screen.dart';
 import 'package:quickbitev3/screens/support/support_screen.dart';
-import 'package:quickbitev3/screens/orders/orders_screen.dart'; // Add this import
-import 'package:quickbitev3/screens/profile/favorites_screen.dart'; // Add this import
-import 'package:quickbitev3/screens/profile/addresses_screen.dart'; // Add this import
-import 'package:quickbitev3/screens/profile/payment_methods_screen.dart'; // Add this import
-import 'package:quickbitev3/screens/profile/edit_profile_screen.dart'; // Add this import
+import 'package:quickbitev3/screens/orders/orders_screen.dart';
+import 'package:quickbitev3/screens/profile/favorites_screen.dart';
+import 'package:quickbitev3/screens/profile/addresses_screen.dart';
+import 'package:quickbitev3/screens/profile/payment_methods_screen.dart';
+import 'package:quickbitev3/screens/profile/edit_profile_screen.dart';
 import 'package:quickbitev3/services/cart_service.dart';
 import 'package:quickbitev3/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
@@ -46,6 +44,9 @@ void main() async {
         FlutterError.presentError(details);
       };
     }
+    
+    // Remove the problematic SVG precaching code
+    // We'll handle SVG loading in a simpler way
   }
 
   runApp(
@@ -81,14 +82,10 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const SplashScreen(), // Remove this line or remove the '/' route
-      // In your routes section
+      home: const SplashScreen(),
       routes: {
-        // Remove this route since you have home defined
-        // '/': (context) => const FoodItemsScreen(),
-        '/food-details': (context) => const FoodDetailsScreen(),
-        '/restaurant-details': (context) => const RestaurantDetailsScreen(),
-        '/cart': (context) => const CartScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/home': (context) => const FoodItemsScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/checkout': (context) => const CheckoutScreen(),
         '/settings': (context) => const SettingsScreen(),
@@ -97,8 +94,6 @@ class MyApp extends StatelessWidget {
         '/favorites': (context) => const FavoritesScreen(),
         '/addresses': (context) => const AddressesScreen(),
         '/payments': (context) => const PaymentMethodsScreen(),
-        // Remove the direct route and use a route builder instead
-        // Add other routes as needed
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/track_order') {

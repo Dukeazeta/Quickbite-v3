@@ -142,8 +142,7 @@ class AuthService extends ChangeNotifier {
     
     return _currentUser;
   }
-  
-  // Remove the duplicate login method that was here
+
   Future<bool> updateProfile(User updatedUser) async {
     // Simulate network delay
     await Future.delayed(const Duration(seconds: 1));

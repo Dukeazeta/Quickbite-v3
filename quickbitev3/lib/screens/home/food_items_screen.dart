@@ -31,7 +31,32 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
 
   // Add this as a class variable
   // Make sure you have a list of restaurants defined as a class variable
-  final List<Map<String, dynamic>> _restaurants = [];
+  final List<Map<String, dynamic>> _restaurants = [
+    {
+      'id': '1',
+      'name': "Mama's Kitchen",
+      'cuisine': 'Nigerian',
+      'rating': 4.8,
+      'deliveryTime': '25-35 min',
+      'imageUrl': 'https://images.pexels.com/photos/5560763/pexels-photo-5560763.jpeg',
+    },
+    {
+      'id': '2',
+      'name': 'Chicken Republic',
+      'cuisine': 'Fast Food',
+      'rating': 4.5,
+      'deliveryTime': '15-25 min',
+      'imageUrl': 'https://images.pexels.com/photos/2983101/pexels-photo-2983101.jpeg',
+    },
+    {
+      'id': '3',
+      'name': 'Golden Dragon',
+      'cuisine': 'Chinese',
+      'rating': 4.7,
+      'deliveryTime': '30-40 min',
+      'imageUrl': 'https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg',
+    },
+  ];
   
   @override
   void initState() {
@@ -566,12 +591,141 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
                             ),
                           );
                         },
-                        child: RestaurantCard(
-                          name: restaurant['name'],
-                          cuisine: restaurant['cuisine'],
-                          rating: restaurant['rating'],
-                          deliveryTime: restaurant['deliveryTime'],
-                          imageUrl: restaurant['imageUrl'],
+                        child: Container(
+                          width: 260,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Restaurant Image
+                              Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      topRight: Radius.circular(16),
+                                    ),
+                                    child: Image.network(
+                                      restaurant['imageUrl'],
+                                      height: 130,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          height: 130,
+                                          color: Colors.grey[300],
+                                          child: Center(
+                                            child: Icon(Icons.restaurant,
+                                                color: Colors.grey[400], size: 40),
+                                          ),
+                                        );
+                                      },
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Container(
+                                          height: 130,
+                                          color: Colors.grey[200],
+                                          child: Center(
+                                            child: CircularProgressIndicator(
+                                              value: loadingProgress.expectedTotalBytes != null
+                                                  ? loadingProgress.cumulativeBytesLoaded / 
+                                                    loadingProgress.expectedTotalBytes!
+                                                  : null,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  // Rating badge
+                                  Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.star, color: Colors.amber, size: 16),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            restaurant['rating'].toString(),
+                                            style: GoogleFonts.poppins(
+                                              color: Colors.black87,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              // Restaurant Info
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      restaurant['name'],
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          restaurant['cuisine'],
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.grey[600],
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Container(
+                                          height: 4,
+                                          width: 4,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[400],
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          restaurant['deliveryTime'],
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.grey[600],
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

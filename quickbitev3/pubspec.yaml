@@ -30,9 +30,11 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
 
+# In the assets section, make sure it looks like this:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/icons/
     - assets/images/
     - assets/svg/  # Add this line for SVG files
