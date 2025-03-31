@@ -16,6 +16,8 @@ import 'package:quickbitev3/screens/profile/favorites_screen.dart';
 import 'package:quickbitev3/screens/profile/addresses_screen.dart';
 import 'package:quickbitev3/screens/profile/payment_methods_screen.dart';
 import 'package:quickbitev3/screens/profile/edit_profile_screen.dart';
+import 'package:quickbitev3/screens/search/search_screen.dart'; // Add this import
+import 'package:quickbitev3/screens/cart/cart_screen.dart';     // Add this import
 import 'package:quickbitev3/services/cart_service.dart';
 import 'package:quickbitev3/services/auth_service.dart';
 import 'package:flutter/foundation.dart';

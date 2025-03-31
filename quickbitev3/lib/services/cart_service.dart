@@ -16,6 +16,10 @@ class CartService extends ChangeNotifier {
     return _items.fold(0, (sum, item) => sum + (item.price * item.quantity));
   }
   
+  double get totalPrice {
+    return items.fold(0, (total, item) => total + (item.price * item.quantity));
+  }
+  
   // Add these getters
   double get deliveryFee => _deliveryFee;
   double get discount => _discount;
@@ -76,8 +80,8 @@ class CartService extends ChangeNotifier {
     }
   }
   
-  void removeFromCart(String id) {
-    _items.removeWhere((item) => item.id == id);
+  void removeItem(String id) {
+    items.removeWhere((item) => item.id == id);
     notifyListeners();
   }
   
