@@ -10,7 +10,7 @@ class SafeNetworkImage extends StatelessWidget {
   final BorderRadius? borderRadius;
 
   const SafeNetworkImage({
-    Key? key,
+    super.key,
     required this.imageUrl,
     this.width,
     this.height,
@@ -18,7 +18,7 @@ class SafeNetworkImage extends StatelessWidget {
     this.placeholder,
     this.errorWidget,
     this.borderRadius,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
-  const FoodDetailsScreen({Key? key}) : super(key: key);
+  const FoodDetailsScreen({super.key});
 
   @override
   State<FoodDetailsScreen> createState() => _FoodDetailsScreenState();

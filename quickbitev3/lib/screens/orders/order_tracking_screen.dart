@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class OrderTrackingScreen extends StatefulWidget {
-  const OrderTrackingScreen({Key? key}) : super(key: key);
+  const OrderTrackingScreen({super.key});
 
   @override
   State<OrderTrackingScreen> createState() => _OrderTrackingScreenState();

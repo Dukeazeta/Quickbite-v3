@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PaymentMethodsScreen extends StatelessWidget {
-  const PaymentMethodsScreen({Key? key}) : super(key: key);
+  const PaymentMethodsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -125,17 +125,17 @@ class PaymentMethodsScreen extends StatelessWidget {
               icon: const Icon(Icons.more_vert),
               itemBuilder: (context) => [
                 PopupMenuItem(
-                  child: Text('Edit'),
                   value: 'edit',
+                  child: Text('Edit'),
                 ),
                 PopupMenuItem(
-                  child: Text('Delete'),
                   value: 'delete',
+                  child: Text('Delete'),
                 ),
                 if (!isDefault)
                   PopupMenuItem(
-                    child: Text('Set as Default'),
                     value: 'default',
+                    child: Text('Set as Default'),
                   ),
               ],
               onSelected: (value) {

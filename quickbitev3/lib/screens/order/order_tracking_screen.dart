@@ -11,9 +11,9 @@ class OrderTrackingScreen extends StatefulWidget {
   final String orderId;
 
   const OrderTrackingScreen({
-    Key? key,
+    super.key,
     required this.orderId,
-  }) : super(key: key);
+  });
 
   @override
   State<OrderTrackingScreen> createState() => _OrderTrackingScreenState();

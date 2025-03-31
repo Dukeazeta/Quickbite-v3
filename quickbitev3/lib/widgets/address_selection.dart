@@ -9,11 +9,11 @@ class AddressSelection extends StatelessWidget {
   final Function(Address) onAddressSelected;
 
   const AddressSelection({
-    Key? key,
+    super.key,
     required this.addresses,
     required this.selectedAddress,
     required this.onAddressSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -8,10 +8,10 @@ class DefaultProfileIcon extends StatelessWidget {
   final double height;
   
   const DefaultProfileIcon({
-    Key? key,
+    super.key,
     this.width = 24,
     this.height = 24,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

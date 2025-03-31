@@ -11,7 +11,7 @@ import 'widgets/food_addon_selector.dart';
 import 'widgets/add_to_cart_button.dart';
 
 class FoodDetailsScreen extends StatefulWidget {
-  const FoodDetailsScreen({Key? key}) : super(key: key);
+  const FoodDetailsScreen({super.key});
 
   @override
   State<FoodDetailsScreen> createState() => _FoodDetailsScreenState();
@@ -21,7 +21,7 @@ class _FoodDetailsScreenState extends State<FoodDetailsScreen> {
   Map<String, dynamic> _foodItem = {};
   int _quantity = 1;
   double _totalPrice = 0;
-  List<String> _selectedAddons = [];
+  final List<String> _selectedAddons = [];
   String? _selectedSize;
 
   @override

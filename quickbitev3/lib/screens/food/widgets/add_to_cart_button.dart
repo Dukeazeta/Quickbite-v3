@@ -7,10 +7,10 @@ class AddToCartButton extends StatelessWidget {
   final VoidCallback onAddToCart;
 
   const AddToCartButton({
-    Key? key,
+    super.key,
     required this.totalPrice,
     required this.onAddToCart,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -10,10 +10,10 @@ class PaymentMethodsScreen extends StatefulWidget {
   final Function(PaymentMethod)? onSelect;
 
   const PaymentMethodsScreen({
-    Key? key,
+    super.key,
     this.isSelecting = false,
     this.onSelect,
-  }) : super(key: key);
+  });
 
   @override
   State<PaymentMethodsScreen> createState() => _PaymentMethodsScreenState();

@@ -13,7 +13,7 @@ import '../../widgets/payment_method_selection.dart';
 import '../order/order_tracking_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({Key? key}) : super(key: key);
+  const CheckoutScreen({super.key});
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();

@@ -5,7 +5,7 @@ import 'widgets/reviews_tab_widget.dart';
 import 'widgets/info_tab_widget.dart';
 
 class RestaurantDetailsScreen extends StatefulWidget {
-  const RestaurantDetailsScreen({Key? key}) : super(key: key);
+  const RestaurantDetailsScreen({super.key});
 
   @override
   State<RestaurantDetailsScreen> createState() =>

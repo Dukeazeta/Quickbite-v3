@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MenuTabWidget extends StatefulWidget {
-  const MenuTabWidget({Key? key}) : super(key: key);
+  const MenuTabWidget({super.key});
 
   @override
   State<MenuTabWidget> createState() => _MenuTabWidgetState();

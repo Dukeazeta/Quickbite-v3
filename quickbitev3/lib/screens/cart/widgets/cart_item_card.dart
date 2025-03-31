@@ -8,11 +8,11 @@ class CartItemCard extends StatelessWidget {
   final Function(String) onRemove;
 
   const CartItemCard({
-    Key? key,
+    super.key,
     required this.item,
     required this.onUpdateQuantity,
     required this.onRemove,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

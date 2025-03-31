@@ -7,11 +7,11 @@ class DeliveryMap extends StatelessWidget {
   final Map<String, double>? driverLocation;
 
   const DeliveryMap({
-    Key? key,
+    super.key,
     required this.restaurantLocation,
     required this.deliveryLocation,
     this.driverLocation,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

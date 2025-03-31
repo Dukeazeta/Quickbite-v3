@@ -6,10 +6,10 @@ class FilterDialog extends StatefulWidget {
   final Function(Map<String, dynamic>) onApplyFilters;
 
   const FilterDialog({
-    Key? key,
+    super.key,
     this.initialFilters = const {},
     required this.onApplyFilters,
-  }) : super(key: key);
+  });
 
   @override
   State<FilterDialog> createState() => _FilterDialogState();

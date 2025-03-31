@@ -7,7 +7,7 @@ import '../payment/payment_methods_screen.dart';
 import 'checkout_screen.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  const CartScreen({super.key});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -224,7 +224,7 @@ class _CartScreenState extends State<CartScreen> {
           ),
         
         // Cart items
-        ..._cartItems.map((item) => _buildCartItemCard(item)).toList(),
+        ..._cartItems.map((item) => _buildCartItemCard(item)),
         
         const SizedBox(height: 16),
         

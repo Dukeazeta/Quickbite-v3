@@ -6,10 +6,10 @@ class FoodSizeSelector extends StatelessWidget {
   final Function(String) onSizeSelected;
 
   const FoodSizeSelector({
-    Key? key,
+    super.key,
     required this.selectedSize,
     required this.onSizeSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -6,10 +6,10 @@ class CustomSearchBar extends StatelessWidget {
   final VoidCallback? onFilterTap;
 
   const CustomSearchBar({
-    Key? key,
+    super.key,
     required this.controller,
     this.onFilterTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 class AddressFormScreen extends StatefulWidget {
   final Address? address;
 
-  const AddressFormScreen({Key? key, this.address}) : super(key: key);
+  const AddressFormScreen({super.key, this.address});
 
   @override
   State<AddressFormScreen> createState() => _AddressFormScreenState();

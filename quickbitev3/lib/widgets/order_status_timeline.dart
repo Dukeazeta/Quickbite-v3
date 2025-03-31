@@ -8,10 +8,10 @@ class OrderStatusTimeline extends StatelessWidget {
   final List<StatusUpdate> statusUpdates;
 
   const OrderStatusTimeline({
-    Key? key,
+    super.key,
     required this.currentStatus,
     required this.statusUpdates,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -8,12 +8,12 @@ class PromotionalBanner extends StatelessWidget {
   final String subtitleText;
 
   const PromotionalBanner({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.promoText,
     required this.discountText,
     required this.subtitleText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

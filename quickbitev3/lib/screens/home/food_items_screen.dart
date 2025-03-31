@@ -11,7 +11,7 @@ import '../../widgets/restaurant_card.dart';
 import '../../widgets/filter_dialog.dart';
 
 class FoodItemsScreen extends StatefulWidget {
-  const FoodItemsScreen({Key? key}) : super(key: key);
+  const FoodItemsScreen({super.key});
 
   @override
   State<FoodItemsScreen> createState() => _FoodItemsScreenState();
@@ -31,7 +31,7 @@ class _FoodItemsScreenState extends State<FoodItemsScreen>
 
   // Add this as a class variable
   // Make sure you have a list of restaurants defined as a class variable
-  List<Map<String, dynamic>> _restaurants = [];
+  final List<Map<String, dynamic>> _restaurants = [];
   
   @override
   void initState() {

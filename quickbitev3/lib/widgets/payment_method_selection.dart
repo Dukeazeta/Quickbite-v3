@@ -9,11 +9,11 @@ class PaymentMethodSelection extends StatelessWidget {
   final Function(PaymentMethod) onPaymentMethodSelected;
 
   const PaymentMethodSelection({
-    Key? key,
+    super.key,
     required this.paymentMethods,
     required this.selectedPaymentMethod,
     required this.onPaymentMethodSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class PaymentMethodSelection extends StatelessWidget {
         else
           Column(
             children: [
-              ...paymentMethods.map((method) => _buildPaymentMethodCard(context, method)).toList(),
+              ...paymentMethods.map((method) => _buildPaymentMethodCard(context, method)),
               const SizedBox(height: 12),
             ],
           ),
@@ -118,14 +118,13 @@ class PaymentMethodSelection extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  if (method.details != null)
-                    Text(
-                      method.details!,
-                      style: GoogleFonts.poppins(
-                        color: Colors.grey[600],
-                        fontSize: 12,
-                      ),
+                  Text(
+                    method.details!,
+                    style: GoogleFonts.poppins(
+                      color: Colors.grey[600],
+                      fontSize: 12,
                     ),
+                  ),
                 ],
               ),
             ),

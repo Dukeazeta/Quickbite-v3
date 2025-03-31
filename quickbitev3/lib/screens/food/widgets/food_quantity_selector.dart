@@ -7,11 +7,11 @@ class FoodQuantitySelector extends StatelessWidget {
   final VoidCallback onDecrement;
 
   const FoodQuantitySelector({
-    Key? key,
+    super.key,
     required this.quantity,
     required this.onIncrement,
     required this.onDecrement,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,7 @@ import '../../services/payment_service.dart';
 import '../../models/payment_method.dart';
 
 class AddPaymentMethodScreen extends StatefulWidget {
-  const AddPaymentMethodScreen({Key? key}) : super(key: key);
+  const AddPaymentMethodScreen({super.key});
 
   @override
   State<AddPaymentMethodScreen> createState() => _AddPaymentMethodScreenState();

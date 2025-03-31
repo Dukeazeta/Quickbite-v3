@@ -6,10 +6,10 @@ class FoodAddonSelector extends StatelessWidget {
   final Function(String) onToggleAddon;
 
   const FoodAddonSelector({
-    Key? key,
+    super.key,
     required this.selectedAddons,
     required this.onToggleAddon,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

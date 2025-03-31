@@ -8,10 +8,10 @@ class AddressListScreen extends StatefulWidget {
   final String? selectedAddressId;
 
   const AddressListScreen({
-    Key? key,
+    super.key,
     this.isSelecting = false,
     this.selectedAddressId,
-  }) : super(key: key);
+  });
 
   @override
   State<AddressListScreen> createState() => _AddressListScreenState();

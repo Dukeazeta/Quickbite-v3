@@ -17,7 +17,7 @@ class FoodItemCard extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const FoodItemCard({
-    Key? key,
+    super.key,
     required this.name,
     required this.restaurant,
     required this.price,
@@ -26,7 +26,7 @@ class FoodItemCard extends StatelessWidget {
     this.onTap,
     this.onAddToCart,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

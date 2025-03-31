@@ -5,10 +5,10 @@ class FoodDetailsHeader extends StatelessWidget {
   final VoidCallback onBackPressed;
 
   const FoodDetailsHeader({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.onBackPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

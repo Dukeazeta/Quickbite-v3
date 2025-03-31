@@ -4,7 +4,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:quickbitev3/utils/app_icons.dart';
 
 class ReviewsTabWidget extends StatelessWidget {
-  const ReviewsTabWidget({Key? key}) : super(key: key);
+  const ReviewsTabWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
