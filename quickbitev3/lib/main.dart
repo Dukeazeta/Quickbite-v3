@@ -96,6 +96,8 @@ class MyApp extends StatelessWidget {
         '/favorites': (context) => const FavoritesScreen(),
         '/addresses': (context) => const AddressesScreen(),
         '/payments': (context) => const PaymentMethodsScreen(),
+             '/search': (context) => const SearchScreen(),  // Add search route
+        '/cart': (context) => const CartScreen(),      // Add cart route
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/track_order') {
